@@ -1,5 +1,7 @@
 package main;
 
+import entity.Player;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -8,7 +10,7 @@ public class GamePanel extends JPanel   implements Runnable {
 
     final int originalTileSize = 16; // The base size of a tile in the game (16x16 pixels)
     final int scale = 3; // Scaling factor to enlarge the tiles for better visibility
-    final int tileSize = originalTileSize * scale; // Final size of a tile after scaling
+     public final int tileSize = originalTileSize * scale; // Final size of a tile after scaling
     final int maxScreenCol = 16; // Number of tiles that can fit horizontally on the screen
     final int maxScreenRow = 12; // Number of tiles that can fit vertically on the screen
     final int screenWidth = tileSize * maxScreenCol; // Total width of the game screen in pixels
@@ -20,7 +22,7 @@ public class GamePanel extends JPanel   implements Runnable {
     KeyHandler keyH = new KeyHandler();
 
     Thread gameThread; // we can use it to create 60 frames per second, Thread for running the game loop
-
+    Player player=new Player(this,keyH);
 
     // set player default position, Player's initial position and speed
     int playerX = 100;  // Player's starting X-coordinate
@@ -53,7 +55,7 @@ public class GamePanel extends JPanel   implements Runnable {
 
     public void run() {
         // Game loop for updating and rendering the game at a consistent rate
-        double drawInterval = 1000000000 / FPS; // Time between draws in nanoseconds
+        double drawInterval = (double) 1000000000 / FPS; // Time between draws in nanoseconds
 
         double delta = 0;
 
@@ -109,34 +111,8 @@ public class GamePanel extends JPanel   implements Runnable {
     }
 
     public void update() {
-        // Check if the 'up' key is pressed
-        if (keyH.upPressed == true) { // If so, decrease the player's Y-coordinate by the player's speed
 
-            // This moves the player up on the screen
-            playerY -= playerSpeed;
-
-        }
-        // Check if the 'down' key is pressed
-        else if (keyH.downPressed == true) { // If so, increase the player's Y-coordinate by the player's speed
-
-            // This moves the player down on the screen
-            playerY += playerSpeed;
-
-        }
-        // Check if the 'left' key is pressed
-        else if (keyH.leftPressed == true) { // If so, decrease the player's X-coordinate by the player's speed
-
-            // This moves the player left on the screen
-            playerX -= playerSpeed;
-
-        }
-        // Check if the 'right' key is pressed
-        else if (keyH.rightPressed == true) {// If so, increase the player's X-coordinate by the player's speed
-
-            // This moves the player right on the screen
-            playerX += playerSpeed;
-
-        }
+        player.update(); // we are calling this method form the Player File.java to make it more readable
     }
     public void paintComponent(Graphics g) {// Call the superclass's paintComponent method to ensure
 
@@ -146,11 +122,7 @@ public class GamePanel extends JPanel   implements Runnable {
         // Cast the Graphics object to Graphics2D for more advanced features
         Graphics2D g2 = (Graphics2D) g;
 
-        // Set the drawing color to white
-        g2.setColor(Color.white);
-
-        // Draw a filled rectangle representing the player at the current (playerX, playerY) position, The size of the rectangle is determined by 'tileSize'
-        g2.fillRect(playerX, playerY, tileSize, tileSize);
+        player.draw(g2); // here we are calling the draw function from the player class
 
         // Dispose of the graphics context to release system resources
         g2.dispose();

@@ -15,23 +15,34 @@ public class Player extends Entity{
     GamePanel gp;
     KeyHandler keyH;
 
+    public final int screenX;
+    public final int screenY;
+
     public Player(GamePanel gp, KeyHandler keyH) {
-        this.gp = gp;
-        this.keyH = keyH;
-        setDefaultValues();
-        getPlayerImage();
+        this.gp = gp; // Reference to the GamePanel for accessing game properties
+        this.keyH = keyH; // Reference to the KeyHandler for processing keyboard input
+
+        // Calculate the screen position to center the player
+        screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
+        screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
+
+        setDefaultValues(); // Initialize default player properties
+        getPlayerImage(); // Load player images for animation
     }
 
-    public void setDefaultValues(){
-        x=100;
-        y=100;
-        speed=4;
-        direction="down";
-
+    public void setDefaultValues() {
+        // Set initial player properties, such as position and speed
+        worldX = gp.tileSize * 23; // Initial world position X
+        worldY = gp.tileSize * 21; // Initial world position Y
+        speed = 4; // Movement speed of the player
+        direction = "down"; // Initial direction the player is facing
     }
 
     public void getPlayerImage(){
+        // Load player images from resources for different animations
         try{
+            // The images are loaded for different directions (up, down, left, right)
+            // Each direction has multiple frames for animation
             up1 = ImageIO.read(getClass().getResourceAsStream("/player/up1.png"));
             up2 = ImageIO.read(getClass().getResourceAsStream("/player/up2.png"));
             up3 = ImageIO.read(getClass().getResourceAsStream("/player/up3.png"));
@@ -73,78 +84,42 @@ public class Player extends Entity{
             right9 = ImageIO.read(getClass().getResourceAsStream("/player/left9.png"));
 
         }catch(IOException e){
-            e.printStackTrace();
+            e.printStackTrace();// Handle exceptions during image loading
         }
     }
 
-    public void update(){
-        // Check if the 'up' key is pressed
-        if (keyH.upPressed == true) { // If so, decrease the player's Y-coordinate by the player's speed
-            direction ="up";
-            // This moves the player up on the screen
-            y -= speed;
+    public void update() {
+        // Update the player's position and animation based on keyboard input
+        if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
+            // Update player position and direction based on the pressed key
+            if (keyH.upPressed) {
+                direction = "up";
+                worldY -= speed; // Move up
+            } else if (keyH.downPressed) {
+                direction = "down";
+                worldY += speed; // Move down
+            } else if (keyH.leftPressed) {
+                direction = "left";
+                worldX -= speed; // Move left
+            } else if (keyH.rightPressed) {
+                direction = "right";
+                worldX += speed; // Move right
+            }
 
+            // Update sprite animation
+            spriteCounter++;
+            if (spriteCounter > 5) {
+                // Cycle through animation frames
+                spriteNum = (spriteNum % 9) + 1;
+                spriteCounter = 0;
+            }
         }
-        // Check if the 'down' key is pressed
-        else if (keyH.downPressed == true) { // If so, increase the player's Y-coordinate by the player's speed
-            direction ="down";
-            // This moves the player down on the screen
-            y += speed;
-
-        }
-        // Check if the 'left' key is pressed
-        else if (keyH.leftPressed == true) { // If so, decrease the player's X-coordinate by the player's speed
-            direction ="left";
-            // This moves the player left on the screen
-            x -= speed;
-
-        }
-        // Check if the 'right' key is pressed
-        else if (keyH.rightPressed == true) {// If so, increase the player's X-coordinate by the player's speed
-            direction ="right";
-            // This moves the player right on the screen
-            x += speed;
-
-        }
-
-        spriteCounter++;
-        if (spriteCounter>5){
-            if (spriteNum ==1){
-                spriteNum=2;
-            }
-            else if (spriteNum ==2){
-                spriteNum=3;
-            }
-            else if (spriteNum ==3){
-                spriteNum=4;
-            }
-            else if (spriteNum ==4){
-                spriteNum=5;
-            }
-            else if (spriteNum ==5){
-                spriteNum=6;
-            }
-            else if (spriteNum ==6){
-                spriteNum=7;
-            }
-            else if (spriteNum ==7){
-                spriteNum=8;
-            }
-            else if (spriteNum ==8){
-                spriteNum=9;
-            }
-            else if (spriteNum ==9){
-                spriteNum=2;
-            }
-            spriteCounter=0;
-
-        }
-
-
     }
     public void draw(Graphics2D g2){
+        // Draw the player on the screen
 
         BufferedImage image = null;
+        // Select the correct image based on the player's direction and animation frame
 
         switch (direction){
             case "up":
@@ -265,7 +240,7 @@ public class Player extends Entity{
                 break;
 
         }
-        g2.drawImage(image, x, y, gp.tileSize, gp.tileSize,null);
+        g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize,null); // Draw the selected image on the screen
 
 
     }

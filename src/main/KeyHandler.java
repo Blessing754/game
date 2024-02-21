@@ -3,53 +3,42 @@ package main;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-// This class is designed to handle keyboard events for controlling the player's movement
+// This class handles keyboard events for player movement
 public class KeyHandler implements KeyListener {
-    public boolean upPressed, downPressed, leftPressed, rightPressed; // These boolean variables keep track of whether specific keys are pressed
-
-
-
+    // Boolean variables to track the state of specific keys (whether they are pressed or not)
+    public boolean upPressed, downPressed, leftPressed, rightPressed;
 
     @Override
     public void keyTyped(KeyEvent e) {
         // This method is part of the KeyListener interface but is not used in this class
+        // It's called when a key is typed (pressed and released), but it's not implemented here
     }
 
-
-
-
     @Override
-    public void keyPressed(KeyEvent e) { // This method is called whenever a key is pressed
+    public void keyPressed(KeyEvent e) {
+        // This method is called whenever a key is pressed
 
         // Get the integer code of the key that was pressed
         int code = e.getKeyCode();
 
         // Check if the 'W' key is pressed
         if (code == KeyEvent.VK_W) {
-            // If so, set the 'upPressed' flag to true
-            upPressed = true;
-
+            upPressed = true; // Set the 'upPressed' flag to true
         }
 
         // Check if the 'S' key is pressed
         if (code == KeyEvent.VK_S) {
-            // If so, set the 'downPressed' flag to true
-            downPressed = true;
-
+            downPressed = true; // Set the 'downPressed' flag to true
         }
 
         // Check if the 'A' key is pressed
         if (code == KeyEvent.VK_A) {
-            // If so, set the 'leftPressed' flag to true
-            leftPressed = true;
-
+            leftPressed = true; // Set the 'leftPressed' flag to true
         }
 
         // Check if the 'D' key is pressed
         if (code == KeyEvent.VK_D) {
-            // If so, set the 'rightPressed' flag to true
-            rightPressed = true;
-
+            rightPressed = true; // Set the 'rightPressed' flag to true
         }
     }
 
@@ -62,26 +51,22 @@ public class KeyHandler implements KeyListener {
 
         // Check if the 'W' key is released
         if (code == KeyEvent.VK_W) {
-            // If so, set the 'upPressed' flag to false
-            upPressed = false;
+            upPressed = false; // Set the 'upPressed' flag to false
         }
 
         // Check if the 'S' key is released
         if (code == KeyEvent.VK_S) {
-            // If so, set the 'downPressed' flag to false
-            downPressed = false;
+            downPressed = false; // Set the 'downPressed' flag to false
         }
 
         // Check if the 'A' key is released
         if (code == KeyEvent.VK_A) {
-            // If so, set the 'leftPressed' flag to false
-            leftPressed = false;
+            leftPressed = false; // Set the 'leftPressed' flag to false
         }
 
         // Check if the 'D' key is released
         if (code == KeyEvent.VK_D) {
-            // If so, set the 'rightPressed' flag to false
-            rightPressed = false;
+            rightPressed = false; // Set the 'rightPressed' flag to false
         }
     }
 }

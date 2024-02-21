@@ -1,6 +1,6 @@
 package main;
-
 import entity.Player;
+import tiles.TileManger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,123 +8,90 @@ import java.awt.*;
 public class GamePanel extends JPanel   implements Runnable {
     // starting with the game screen settings
 
-    final int originalTileSize = 32; // The base size of a tile in the game (16x16 pixels)
-    final int scale = 2; // Scaling factor to enlarge the tiles for better visibility
-     public final int tileSize = originalTileSize * scale; // Final size of a tile after scaling
-    final int maxScreenCol = 16; // Number of tiles that can fit horizontally on the screen
-    final int maxScreenRow = 12; // Number of tiles that can fit vertically on the screen
-    final int screenWidth = tileSize * maxScreenCol; // Total width of the game screen in pixels
-    final int screenHeight = tileSize * maxScreenRow; // Total height of the game screen in pixels
+    final int originalTileSize = 16; // The base size of each tile in the game, in pixels (16x16)
+    final int scale = 3; // Scaling factor to enlarge the tiles, enhancing visibility
+    public final int tileSize = originalTileSize * scale; // Final size of a tile after applying the scale factor
+    public final int maxScreenCol = 16; // Maximum number of tiles that fit horizontally on the screen
+    public final int maxScreenRow = 12; // Maximum number of tiles that fit vertically on the screen
+    public final int screenWidth = tileSize * maxScreenCol; // Total pixel width of the game screen
+    public final int screenHeight = tileSize * maxScreenRow; // Total pixel height of the game screen
 
-    int FPS=60; // Target frames per second
+    // World map settings
 
-    // Instance of KeyHandler to listen for keyboard inputs
-    KeyHandler keyH = new KeyHandler();
+    public final int maxWorldCol = 50; // Maximum number of columns in the world map
+    public final int maxWorldRow = 50; // Maximum number of rows in the world map
+    public final int worldWidth = maxWorldCol * tileSize; // Total width of the world map in pixels
+    public final int worldHeight = maxWorldRow * tileSize; // Total height of the world map in pixels
 
-    Thread gameThread; // we can use it to create 60 frames per second, Thread for running the game loop
-    Player player=new Player(this,keyH);
+    int FPS = 60; // Target frames per second for the game
 
-    // set player default position, Player's initial position and speed
-    int playerX = 100;  // Player's starting X-coordinate
-    int playerY=100;    // Player's starting Y-coordinate
-    int playerSpeed=4;  // Number of pixels the player moves per update
+    TileManger tileM= new TileManger(this);// Instance of TileManager to handle tile operations
+    KeyHandler keyH = new KeyHandler();// Instance of KeyHandler to listen for keyboard inputs
 
+    Thread gameThread; // Thread for running the game loop at a consistent rate
+    public Player player = new Player(this, keyH); // Instance of the Player class, linked to this panel and the key handler
 
     public GamePanel() {
-        // Set the size, background color, and double-buffering (for smooth rendering) of the panel
+        // Constructor for setting up the panel properties
 
-       this.setPreferredSize(new Dimension(new Dimension(screenWidth, screenHeight)));
-       this.setBackground(Color.white);
-       this.setDoubleBuffered(true);
+        this.setPreferredSize(new Dimension(screenWidth, screenHeight)); // Set preferred size of the panel
+        this.setBackground(Color.black); // Set background color of the panel
+        this.setDoubleBuffered(true); // Enable double buffering for smoother graphics rendering
 
-        // Add the key listener to the panel and make sure it can gain focus for keyboard input
-       this.addKeyListener(keyH);
-
-       this.setFocusable(true);
-
+        this.addKeyListener(keyH); // Add the key listener to the panel for keyboard input handling
+        this.setFocusable(true); // Ensure the panel can gain focus to receive keyboard input
     }
 
     public void startGameThread() {
-        // Create and start the game loop thread
-        gameThread = new Thread(this);
+        // Method to start the game loop thread
 
-        gameThread.start();
+        gameThread = new Thread(this); // Initialize the thread with this GamePanel as the Runnable target
+        gameThread.start(); // Start the game loop thread
     }
 
-
-
     public void run() {
-        // Game loop for updating and rendering the game at a consistent rate
-        double drawInterval = (double) 1000000000 / FPS; // Time between draws in nanoseconds
+        // The game loop, responsible for updating and rendering the game
 
+        double drawInterval = 1000000000 / FPS; // Time between draws in nanoseconds
         double delta = 0;
-
         long lastTime = System.nanoTime(); // Stores the last time the loop was run
-
-        long currentTime; // Current time for each loop iteration
-
+        long currentTime; // Stores the current time for each loop iteration
         long timer = 0; // Timer for tracking FPS
+        int drawCount = 0; // Counter for the number of frames drawn per second
 
-        int drawCount = 0; // Counter for the number of draws (frames) in a second
+        while (gameThread != null) { // Continue the loop as long as the gameThread is active
+            currentTime = System.nanoTime(); // Capture current time
+            delta += (currentTime - lastTime) / drawInterval; // Calculate elapsed time since last update
+            timer += (currentTime - lastTime); // Update the timer
+            lastTime = currentTime; // Set lastTime for the next loop iteration
 
-
-        while (gameThread != null) { // The game loop checks if the gameThread object is not null to continue running the loop
-
-            // Capture the current system time in nanoseconds for this loop iteration
-            currentTime = System.nanoTime();
-
-
-            // This is used to maintain a consistent update rate regardless of processing speed, Calculate the amount of time that has passed since the last iteration ('delta').
-            delta += (currentTime - lastTime) / drawInterval;
-
-            // Accumulate the total time passed since the last FPS update
-            timer += (currentTime - lastTime);
-
-            // Update 'lastTime' to the current time for the next iteration
-            lastTime = currentTime;
-
-            // Check if 'delta' has accumulated enough to signify that it's time for an update
-            if (delta >= 1) {
-                // Update the game state (e.g., player position, game logic)
-                update();
-
-                // Redraw the game visuals on the screen
-                repaint();
-
-                // Decrement 'delta' to indicate that an update and repaint have been completed
+            if (delta >= 1) { // Check if it's time to update and repaint
+                update(); // Update game state
+                repaint(); // Redraw the game
                 delta--;
-
-                // Increment the frame draw counter, used to track how many times the game updates per second
                 drawCount++;
             }
 
-            if (timer >= 1000000000) { // Check if one second has passed to update the FPS counter
-
-                // Output the number of frames that were drawn in the last second (FPS) to the console
-                System.out.println("FPS: " + drawCount);
-
-                // Reset the draw count and timer for the next second
-                drawCount = 0;
-                timer = 0;
+            if (timer >= 1000000000) { // Check if one second has passed
+                System.out.println("FPS: " + drawCount); // Output FPS to the console
+                drawCount = 0; // Reset draw count for the next second
+                timer = 0; // Reset timer
             }
         }
     }
 
     public void update() {
-
-        player.update(); // we are calling this method form the Player File.java to make it more readable
+        player.update(); // Update player state (movement, interactions, etc.)
     }
-    public void paintComponent(Graphics g) {// Call the superclass's paintComponent method to ensure
 
-        // proper rendering of the JPanel
-        super.paintComponent(g);
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g); // Call superclass method for standard painting
 
-        // Cast the Graphics object to Graphics2D for more advanced features
-        Graphics2D g2 = (Graphics2D) g;
+        Graphics2D g2 = (Graphics2D) g; // Cast Graphics to Graphics2D for advanced features
 
-        player.draw(g2); // here we are calling the draw function from the player class
+        tileM.draw(g2); // Draw tiles on the screen
+        player.draw(g2); // Draw the player
 
-        // Dispose of the graphics context to release system resources
-        g2.dispose();
+        g2.dispose(); // Dispose of the graphics context to release system resources
     }
 }

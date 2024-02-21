@@ -19,6 +19,7 @@ public class Main {
         // Instantiate the GamePanel class, which will handle the game's graphics and logic
         GamePanel gamePanel = new GamePanel();
 
+
         // Adds the GamePanel instance to the JFrame window, so it will be displayed
         window.add(gamePanel);
 

@@ -78,67 +78,72 @@ public class Player extends Entity{
     }
 
     public void update(){
+
+        if (keyH.upPressed==true || keyH.downPressed==true || keyH.leftPressed==true || keyH.rightPressed==true){
+
+            if (keyH.upPressed == true) { // If so, decrease the player's Y-coordinate by the player's speed
+                direction ="up";
+                // This moves the player up on the screen
+                y -= speed;
+
+            }
+            // Check if the 'down' key is pressed
+            else if (keyH.downPressed == true) { // If so, increase the player's Y-coordinate by the player's speed
+                direction ="down";
+                // This moves the player down on the screen
+                y += speed;
+
+            }
+            // Check if the 'left' key is pressed
+            else if (keyH.leftPressed == true) { // If so, decrease the player's X-coordinate by the player's speed
+                direction ="left";
+                // This moves the player left on the screen
+                x -= speed;
+
+            }
+            // Check if the 'right' key is pressed
+            else if (keyH.rightPressed == true) {// If so, increase the player's X-coordinate by the player's speed
+                direction ="right";
+                // This moves the player right on the screen
+                x += speed;
+
+            }
+
+            spriteCounter++;
+            if (spriteCounter>5){
+                if (spriteNum ==1){
+                    spriteNum=2;
+                }
+                else if (spriteNum ==2){
+                    spriteNum=3;
+                }
+                else if (spriteNum ==3){
+                    spriteNum=4;
+                }
+                else if (spriteNum ==4){
+                    spriteNum=5;
+                }
+                else if (spriteNum ==5){
+                    spriteNum=6;
+                }
+                else if (spriteNum ==6){
+                    spriteNum=7;
+                }
+                else if (spriteNum ==7){
+                    spriteNum=8;
+                }
+                else if (spriteNum ==8){
+                    spriteNum=9;
+                }
+                else if (spriteNum ==9){
+                    spriteNum=2;
+                }
+                spriteCounter=0;
+
+            }
+
+        }
         // Check if the 'up' key is pressed
-        if (keyH.upPressed == true) { // If so, decrease the player's Y-coordinate by the player's speed
-            direction ="up";
-            // This moves the player up on the screen
-            y -= speed;
-
-        }
-        // Check if the 'down' key is pressed
-        else if (keyH.downPressed == true) { // If so, increase the player's Y-coordinate by the player's speed
-            direction ="down";
-            // This moves the player down on the screen
-            y += speed;
-
-        }
-        // Check if the 'left' key is pressed
-        else if (keyH.leftPressed == true) { // If so, decrease the player's X-coordinate by the player's speed
-            direction ="left";
-            // This moves the player left on the screen
-            x -= speed;
-
-        }
-        // Check if the 'right' key is pressed
-        else if (keyH.rightPressed == true) {// If so, increase the player's X-coordinate by the player's speed
-            direction ="right";
-            // This moves the player right on the screen
-            x += speed;
-
-        }
-
-        spriteCounter++;
-        if (spriteCounter>5){
-            if (spriteNum ==1){
-                spriteNum=2;
-            }
-            else if (spriteNum ==2){
-                spriteNum=3;
-            }
-            else if (spriteNum ==3){
-                spriteNum=4;
-            }
-            else if (spriteNum ==4){
-                spriteNum=5;
-            }
-            else if (spriteNum ==5){
-                spriteNum=6;
-            }
-            else if (spriteNum ==6){
-                spriteNum=7;
-            }
-            else if (spriteNum ==7){
-                spriteNum=8;
-            }
-            else if (spriteNum ==8){
-                spriteNum=9;
-            }
-            else if (spriteNum ==9){
-                spriteNum=2;
-            }
-            spriteCounter=0;
-
-        }
 
 
     }

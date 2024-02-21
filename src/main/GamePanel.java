@@ -1,6 +1,7 @@
 package main;
 
 import entity.Player;
+import tiles.TileManger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,33 +9,33 @@ import java.awt.*;
 public class GamePanel extends JPanel   implements Runnable {
     // starting with the game screen settings
 
-    final int originalTileSize = 32; // The base size of a tile in the game (16x16 pixels)
-    final int scale = 2; // Scaling factor to enlarge the tiles for better visibility
+    final int originalTileSize = 16; // The base size of a tile in the game (16x16 pixels)
+    final int scale = 3; // Scaling factor to enlarge the tiles for better visibility
      public final int tileSize = originalTileSize * scale; // Final size of a tile after scaling
-    final int maxScreenCol = 16; // Number of tiles that can fit horizontally on the screen
-    final int maxScreenRow = 12; // Number of tiles that can fit vertically on the screen
-    final int screenWidth = tileSize * maxScreenCol; // Total width of the game screen in pixels
-    final int screenHeight = tileSize * maxScreenRow; // Total height of the game screen in pixels
+    public final int maxScreenCol = 16; // Number of tiles that can fit horizontally on the screen
+    public final int maxScreenRow = 12; // Number of tiles that can fit vertically on the screen
+    public final int screenWidth = tileSize * maxScreenCol; // Total width of the game screen in pixels
+    public final int screenHeight = tileSize * maxScreenRow; // Total height of the game screen in pixels
 
     int FPS=60; // Target frames per second
 
+
+    TileManger tileM= new TileManger(this);
     // Instance of KeyHandler to listen for keyboard inputs
     KeyHandler keyH = new KeyHandler();
 
     Thread gameThread; // we can use it to create 60 frames per second, Thread for running the game loop
     Player player=new Player(this,keyH);
 
-    // set player default position, Player's initial position and speed
-    int playerX = 100;  // Player's starting X-coordinate
-    int playerY=100;    // Player's starting Y-coordinate
-    int playerSpeed=4;  // Number of pixels the player moves per update
+
+
 
 
     public GamePanel() {
         // Set the size, background color, and double-buffering (for smooth rendering) of the panel
 
        this.setPreferredSize(new Dimension(new Dimension(screenWidth, screenHeight)));
-       this.setBackground(Color.white);
+       this.setBackground(Color.black);
        this.setDoubleBuffered(true);
 
         // Add the key listener to the panel and make sure it can gain focus for keyboard input
@@ -121,6 +122,8 @@ public class GamePanel extends JPanel   implements Runnable {
 
         // Cast the Graphics object to Graphics2D for more advanced features
         Graphics2D g2 = (Graphics2D) g;
+
+        tileM.draw(g2);
 
         player.draw(g2); // here we are calling the draw function from the player class
 

@@ -8,8 +8,8 @@ import java.awt.*;
 public class GamePanel extends JPanel   implements Runnable {
     // starting with the game screen settings
 
-    final int originalTileSize = 16; // The base size of a tile in the game (16x16 pixels)
-    final int scale = 3; // Scaling factor to enlarge the tiles for better visibility
+    final int originalTileSize = 32; // The base size of a tile in the game (16x16 pixels)
+    final int scale = 2; // Scaling factor to enlarge the tiles for better visibility
      public final int tileSize = originalTileSize * scale; // Final size of a tile after scaling
     final int maxScreenCol = 16; // Number of tiles that can fit horizontally on the screen
     final int maxScreenRow = 12; // Number of tiles that can fit vertically on the screen
@@ -34,7 +34,7 @@ public class GamePanel extends JPanel   implements Runnable {
         // Set the size, background color, and double-buffering (for smooth rendering) of the panel
 
        this.setPreferredSize(new Dimension(new Dimension(screenWidth, screenHeight)));
-       this.setBackground(Color.black);
+       this.setBackground(Color.white);
        this.setDoubleBuffered(true);
 
         // Add the key listener to the panel and make sure it can gain focus for keyboard input

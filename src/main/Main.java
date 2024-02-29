@@ -22,6 +22,7 @@ public class Main {
         // This class is assumed to extend a component like JPanel and contain game-related methods
         GamePanel gamePanel = new GamePanel();
 
+
         // Adds the GamePanel instance to the JFrame window, so it will be displayed
         // The GamePanel is where the game's graphics and interactions are likely handled
         window.add(gamePanel);

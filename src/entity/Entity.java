@@ -1,5 +1,6 @@
 package entity;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Entity {
@@ -22,4 +23,8 @@ public class Entity {
     // Variables to control animation frames
     public int spriteNum = 1;      // Current frame number in the animation sequence
     public int spriteCounter = 1;  // Counter used to determine when to change to the next animation frame
+
+    public Rectangle solidArea;
+    public boolean collision = false;
+    public boolean collisionOn;
 }

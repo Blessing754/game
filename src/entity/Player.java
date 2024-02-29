@@ -26,6 +26,13 @@ public class Player extends Entity{
         screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
         screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
 
+        solidArea = new Rectangle();
+        solidArea.x = 8;
+        solidArea.y = 16;
+        solidArea.width = 32;
+        solidArea.height = 32;
+
+
         setDefaultValues(); // Initialize default player properties
         getPlayerImage(); // Load player images for animation
     }
@@ -94,27 +101,73 @@ public class Player extends Entity{
             // Update player position and direction based on the pressed key
             if (keyH.upPressed) {
                 direction = "up";
-                worldY -= speed; // Move up
+                 // Move up
             } else if (keyH.downPressed) {
                 direction = "down";
-                worldY += speed; // Move down
+                 // Move down
             } else if (keyH.leftPressed) {
                 direction = "left";
-                worldX -= speed; // Move left
+               // Move left
             } else if (keyH.rightPressed) {
                 direction = "right";
-                worldX += speed; // Move right
+                 // Move right
+            }
+
+            //check tile collision
+            collisionOn = false;
+            gp.cChecker.checkTile(this);
+
+            // player collision
+
+            if (collisionOn==false) {
+
+                switch (direction){
+                    case "up":
+                        worldY -= speed;
+                        break;
+                    case "down":
+                        worldY += speed;
+                        break;
+                    case "left":
+                        worldX -= speed;
+                        break;
+                    case "right":
+                        worldX += speed;
+                        break;
+                }
+
+
             }
 
             // Update sprite animation
             spriteCounter++;
             if (spriteCounter > 5) {
-                // Cycle through animation frames
-                spriteNum = (spriteNum % 9) + 1;
+                if (spriteNum == 1) {
+                    spriteNum = 2;
+                } else if (spriteNum == 2) {
+                    spriteNum = 3;
+                } else if (spriteNum == 3) {
+                    spriteNum = 4;
+                } else if (spriteNum == 4) {
+                    spriteNum = 5;
+                } else if (spriteNum == 5) {
+                    spriteNum = 6;
+                } else if (spriteNum == 6) {
+                    spriteNum = 7;
+                } else if (spriteNum == 7) {
+                    spriteNum = 8;
+                } else if (spriteNum == 8) {
+                    spriteNum = 9;
+                } else if (spriteNum == 9) {
+                    spriteNum = 2;
+                }
                 spriteCounter = 0;
+
             }
         }
+
     }
+
     public void draw(Graphics2D g2){
         // Draw the player on the screen
 

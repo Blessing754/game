@@ -5,8 +5,14 @@ import java.awt.event.KeyListener;
 
 // This class handles keyboard events for player movement
 public class KeyHandler implements KeyListener {
-    // Boolean variables to track the state of specific keys (whether they are pressed or not)
+    // Flags for Player 1
     public boolean upPressed, downPressed, leftPressed, rightPressed;
+    private boolean canMoveUp = true, canMoveDown = true, canMoveLeft = true, canMoveRight = true;
+
+    // Flags for Player 2
+    public boolean wPressed, sPressed, aPressed, dPressed;
+    private boolean canMoveW = true, canMoveS = true, canMoveA = true, canMoveD = true;
+
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -14,59 +20,85 @@ public class KeyHandler implements KeyListener {
         // It's called when a key is typed (pressed and released), but it's not implemented here
     }
 
-    @Override
-    public void keyPressed(KeyEvent e) {
-        // This method is called whenever a key is pressed
 
-        // Get the integer code of the key that was pressed
+    public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
 
-        // Check if the 'W' key is pressed
-        if (code == KeyEvent.VK_W) {
-            upPressed = true; // Set the 'upPressed' flag to true
+        // Player 1 movement
+        if (code == KeyEvent.VK_UP && canMoveUp) {
+            upPressed = true;
+            canMoveUp = false;
+        }
+        if (code == KeyEvent.VK_DOWN && canMoveDown) {
+            downPressed = true;
+            canMoveDown = false;
+        }
+        if (code == KeyEvent.VK_LEFT && canMoveLeft) {
+            leftPressed = true;
+            canMoveLeft = false;
+        }
+        if (code == KeyEvent.VK_RIGHT && canMoveRight) {
+            rightPressed = true;
+            canMoveRight = false;
         }
 
-        // Check if the 'S' key is pressed
-        if (code == KeyEvent.VK_S) {
-            downPressed = true; // Set the 'downPressed' flag to true
+        // Player 2 movement
+        if (code == KeyEvent.VK_W && canMoveW) {
+            wPressed = true;
+            canMoveW = false;
         }
-
-        // Check if the 'A' key is pressed
-        if (code == KeyEvent.VK_A) {
-            leftPressed = true; // Set the 'leftPressed' flag to true
+        if (code == KeyEvent.VK_S && canMoveS) {
+            sPressed = true;
+            canMoveS = false;
         }
-
-        // Check if the 'D' key is pressed
-        if (code == KeyEvent.VK_D) {
-            rightPressed = true; // Set the 'rightPressed' flag to true
+        if (code == KeyEvent.VK_A && canMoveA) {
+            aPressed = true;
+            canMoveA = false;
+        }
+        if (code == KeyEvent.VK_D && canMoveD) {
+            dPressed = true;
+            canMoveD = false;
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        // This method is called whenever a key is released
-
-        // Get the integer code of the key that was released
         int code = e.getKeyCode();
 
-        // Check if the 'W' key is released
+        // Player 1 movement
+        if (code == KeyEvent.VK_UP) {
+            upPressed = false;
+            canMoveUp = true;
+        }
+        if (code == KeyEvent.VK_DOWN) {
+            downPressed = false;
+            canMoveDown = true;
+        }
+        if (code == KeyEvent.VK_LEFT) {
+            leftPressed = false;
+            canMoveLeft = true;
+        }
+        if (code == KeyEvent.VK_RIGHT) {
+            rightPressed = false;
+            canMoveRight = true;
+        }
+
+        // Player 2 movement
         if (code == KeyEvent.VK_W) {
-            upPressed = false; // Set the 'upPressed' flag to false
+            wPressed = false;
+            canMoveW = true;
         }
-
-        // Check if the 'S' key is released
         if (code == KeyEvent.VK_S) {
-            downPressed = false; // Set the 'downPressed' flag to false
+            sPressed = false;
+            canMoveS = true;
         }
-
-        // Check if the 'A' key is released
         if (code == KeyEvent.VK_A) {
-            leftPressed = false; // Set the 'leftPressed' flag to false
+            aPressed = false;
+            canMoveA = true;
         }
-
-        // Check if the 'D' key is released
         if (code == KeyEvent.VK_D) {
-            rightPressed = false; // Set the 'rightPressed' flag to false
+            dPressed = false;
+            canMoveD = true;
         }
     }
 }

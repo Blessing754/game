@@ -16,14 +16,21 @@ public class Player2 extends PlayerEntity {
     public Player2(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
+
+        solidArea = new Rectangle();
+        solidArea.x=8;
+        solidArea.y=16;
+        solidArea.width=48;
+        solidArea.height=48;
+
         setDefaultValuesP2();
         getPlayerImageP2();
         getPlayerImageP2();
     }
 
     public void setDefaultValuesP2() {
-        x =64;
-        y =448;
+        worldX =64;
+        worldY =448;
         speed = 2;
         direction = null;
     }
@@ -79,73 +86,76 @@ public class Player2 extends PlayerEntity {
     }
 
     public void update() {
-        if (!moving) {
-            boolean validKeyPress = false;
-
-            int tempTargetX = x;
-            int tempTargetY = y;
-
+        // Update the player's position and animation based on keyboard input
+        if (keyH.wPressed || keyH.sPressed || keyH.dPressed || keyH.aPressed) {
+            // Update player position and direction based on the pressed key
             if (keyH.wPressed) {
-                tempTargetY = y - gp.tileSize;
                 direction = "up";
-                validKeyPress = true;
+                // Move up
             } else if (keyH.sPressed) {
-                tempTargetY = y + gp.tileSize;
                 direction = "down";
-                validKeyPress = true;
+                // Move down
             } else if (keyH.aPressed) {
-                tempTargetX = x - gp.tileSize;
                 direction = "left";
-                validKeyPress = true;
+                // Move left
             } else if (keyH.dPressed) {
-                tempTargetX = x + gp.tileSize;
                 direction = "right";
-                validKeyPress = true;
+                // Move right
             }
 
-            if (validKeyPress) {
-                targetX = tempTargetX;
-                targetY = tempTargetY;
-                moving = true;
+            //check tile collision
+            collisionOn = false;
+            gp.cChecker.checkTile(this);
+
+            // player collision
+
+            if (collisionOn==false) {
+
+                switch (direction){
+                    case "up":
+                        worldY -= speed;
+                        break;
+                    case "down":
+                        worldY += speed;
+                        break;
+                    case "left":
+                        worldX -= speed;
+                        break;
+                    case "right":
+                        worldX += speed;
+                        break;
+                }
+
+
             }
 
-            // Disable continuous movement by resetting the key flags
-            keyH.wPressed = false;
-            keyH.sPressed = false;
-            keyH.aPressed = false;
-            keyH.dPressed = false;
+            // Update sprite animation
+            spriteCounter++;
+            if (spriteCounter > 7) {
+                if (spriteNum == 1) {
+                    spriteNum = 2;
+                } else if (spriteNum == 2) {
+                    spriteNum = 3;
+                } else if (spriteNum == 3) {
+                    spriteNum = 4;
+                } else if (spriteNum == 4) {
+                    spriteNum = 5;
+                } else if (spriteNum == 5) {
+                    spriteNum = 6;
+                } else if (spriteNum == 6) {
+                    spriteNum = 7;
+                } else if (spriteNum == 7) {
+                    spriteNum = 8;
+                } else if (spriteNum == 8) {
+                    spriteNum = 9;
+                } else if (spriteNum == 9) {
+                    spriteNum = 2;
+                }
+                spriteCounter = 0;
+
+            }
         }
 
-
-        // Movement logic - if the player is currently moving, interpolate the position
-        if (moving) {
-            if (Math.abs(x - targetX) > speed || Math.abs(y - targetY) > speed) {
-                if (x < targetX) {
-                    x += speed;
-                } else if (x > targetX) {
-                    x -= speed;
-                }
-                if (y < targetY) {
-                    y += speed;
-                } else if (y > targetY) {
-                    y -= speed;
-                }
-
-                // Update sprite animation
-                spriteCounter++;
-                if (spriteCounter > 3) {
-                    spriteCounter = 0;
-                    spriteNum = (spriteNum + 1) % 9;
-                    if (spriteNum == 0) spriteNum = 1;
-                }
-            } else {
-                // Snap to the target position
-                x = targetX;
-                y = targetY;
-                moving = false; // Stop moving
-                spriteNum = 1; // Reset sprite animation to the starting position
-            }
-        }
     }
 
     public void draw(Graphics2D g2) {
@@ -248,6 +258,6 @@ public class Player2 extends PlayerEntity {
         }
 
         // Draw Player 2 image at its current position
-        g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+        g2.drawImage(image, worldX, worldY, gp.tileSize, gp.tileSize, null);
     }
 }

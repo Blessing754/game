@@ -3,7 +3,7 @@ package main;
 import PlayerEntity.Player;
 import PlayerEntity.Player2;
 import tile.TileManager;
-import tiles.Tile;
+import tile.Tile;
 
 import java.awt.*;
 import javax.swing.*;
@@ -22,12 +22,21 @@ public class GamePanel extends JPanel implements Runnable {
 
     public final int screenWidth = tileSize * maxScreenCol; // 1056 px
     public final int screenHeight = tileSize * maxScreenRow; // 1056 px
+
+
+    // World settings
+    public final int maxWorldCol =14;
+    public final int maxWorldRow = 14;
+    public final int worldWidth = tileSize * maxWorldCol;
+    public final int worldHeight = tileSize * maxWorldRow;
+
     int FPS =60;
 
     TileManager tileM = new TileManager(this);
 
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
+    public CollisionChecker cChecker = new CollisionChecker(this);
     Player player = new Player (this,keyH);
     Player2 player2 = new Player2(this, keyH);
 
@@ -129,6 +138,5 @@ public class GamePanel extends JPanel implements Runnable {
             g.drawLine(0, y, screenWidth, y);
         }
     }
-
 
 }

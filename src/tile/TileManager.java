@@ -7,21 +7,21 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import main.GamePanel;
-import tiles.Tile;
+import tile.Tile;
 
 import javax.imageio.ImageIO;
 
 
 public class TileManager {
     GamePanel gp;
-    Tile[] tile;
-    int mapTileNum[][];
+     public Tile[] tile;
+     public int  mapTileNum[][];
 
     public TileManager(GamePanel gp) {
 
         this.gp = gp;
         tile = new Tile[50];
-        mapTileNum = new int [gp.maxScreenCol][gp.maxScreenRow];
+        mapTileNum = new int [gp.maxWorldCol][gp.maxWorldRow];
         getTileImage();
         loadMap();
 
@@ -97,9 +97,11 @@ public void getTileImage()  {
 
         tile [19]=new Tile ();
         tile[19].image = ImageIO.read(getClass().getResourceAsStream("/tiles/tree.png"));
+        tile [19].collision=true;
 
         tile [20]=new Tile ();
         tile[20].image = ImageIO.read(getClass().getResourceAsStream("/tiles/wall.png"));
+        tile [20].collision=true;
 
 
 
@@ -119,10 +121,10 @@ public void getTileImage()  {
             int col=0;
             int row=0;
 
-            while (col <gp.maxScreenCol && row < gp.maxScreenRow){
+            while (col <gp.maxWorldCol && row < gp.maxWorldRow){
                 String line = br.readLine();
 
-                while (col<gp.maxScreenCol){
+                while (col<gp.maxWorldCol){
                     String numbers[] =line.split(" ");
 
                     int num = Integer.parseInt(numbers[col]);
@@ -131,7 +133,7 @@ public void getTileImage()  {
                     col++;
 
                 }
-                if(col == gp.maxScreenCol){
+                if(col == gp.maxWorldCol){
                     col =0;
                     row++;
                 }
@@ -150,7 +152,10 @@ public void getTileImage()  {
     int x = 0;
     int y = 0;
 
-    while (col < gp.maxScreenCol && row < gp.maxScreenRow)  {
+    while (col < gp.maxWorldCol && row < gp.maxWorldRow)  {
+
+
+
 
         int tileNum = mapTileNum[col][row];
 
@@ -158,7 +163,7 @@ public void getTileImage()  {
         col ++;
         x += gp.tileSize;
 
-        if(col == gp.maxScreenCol)  {
+        if(col == gp.maxWorldCol)  {
             col = 0;
             x =0;
             row ++;

@@ -100,5 +100,6 @@ public class KeyHandler implements KeyListener {
             dPressed = false;
             canMoveD = true;
         }
+
     }
 }

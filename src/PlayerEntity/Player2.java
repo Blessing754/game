@@ -30,7 +30,7 @@ public class Player2 extends PlayerEntity {
 
     public void setDefaultValuesP2() {
         worldX =64;
-        worldY =448;
+        worldY =384;
         speed = 2;
         direction = null;
     }

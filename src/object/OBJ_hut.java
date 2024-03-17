@@ -3,18 +3,16 @@ package object;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 
-public class OBJ_Key extends SuperObject{
-
-    public OBJ_Key() {
-        name = "Key";
+public class OBJ_hut extends SuperObject{
+    public OBJ_hut() {
+        name = "hut";
 
         try {
-            image = ImageIO.read(getClass().getResourceAsStream("/objects/key.png"));
+            image = ImageIO.read(getClass().getResourceAsStream("/objects/hut.png"));
 
         } catch (IOException e) {
             e.printStackTrace();
 
         }
     }
-
 }

@@ -10,6 +10,8 @@ import java.io.IOException;
 
 public class Player extends PlayerEntity {
 
+    public int screenX;
+    public int screenY;
     GamePanel gp;
     KeyHandler keyH;
 
@@ -31,7 +33,7 @@ public class Player extends PlayerEntity {
     public void setDefaultValues() {
 
         worldX = 768;
-        worldY = 448;
+        worldY = 384;
         speed = 2;
         direction = null;
     }

@@ -3,18 +3,16 @@ package object;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 
-public class OBJ_Key extends SuperObject{
-
-    public OBJ_Key() {
-        name = "Key";
+public class OBJ_Trap extends SuperObject{
+    public OBJ_Trap() {
+        name = "Trap";
 
         try {
-            image = ImageIO.read(getClass().getResourceAsStream("/objects/key.png"));
+            image = ImageIO.read(getClass().getResourceAsStream("/objects/Trap.png"));
 
         } catch (IOException e) {
             e.printStackTrace();
 
         }
     }
-
 }

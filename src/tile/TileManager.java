@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import main.GamePanel;
-import tile.Tile;
 
 import javax.imageio.ImageIO;
 
@@ -82,16 +81,16 @@ public void getTileImage()  {
         // House tile
 
         tile [15]=new Tile ();
-        tile[15].image = ImageIO.read(getClass().getResourceAsStream("/tiles/hut1.png"));
+        tile[15].image = ImageIO.read(getClass().getResourceAsStream("/Objects/hut1.png"));
 
         tile [16]=new Tile ();
-        tile[16].image = ImageIO.read(getClass().getResourceAsStream("/tiles/market2.png"));
+        tile[16].image = ImageIO.read(getClass().getResourceAsStream("/Objects/market2.png"));
 
         tile [17]=new Tile ();
-        tile[17].image = ImageIO.read(getClass().getResourceAsStream("/tiles/market1.png"));
+        tile[17].image = ImageIO.read(getClass().getResourceAsStream("/Objects/market1.png"));
 
         tile [18]=new Tile ();
-        tile[18].image = ImageIO.read(getClass().getResourceAsStream("/tiles/Castle.png"));
+        tile[18].image = ImageIO.read(getClass().getResourceAsStream("/Objects/Castle.png"));
 
         // tree and object tile
 

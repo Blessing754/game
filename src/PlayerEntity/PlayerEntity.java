@@ -23,5 +23,7 @@ public class PlayerEntity {
     public int spriteNum = 1;
 
     public Rectangle solidArea;
+
+    public int solidAreaDX, solidAreaDY;
     public boolean collisionOn = false;
 }

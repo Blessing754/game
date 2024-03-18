@@ -10,9 +10,9 @@ public class AssetSetter {
 
     }
     public void setObject(){
-//        gp.obj[0] =new OBJ_Key();
-//        gp.obj[0].worldX= 8 * gp.tileSize;
-//        gp.obj[0].worldY= 7 * gp.tileSize;
+        gp.obj[0] =new OBJ_Key();
+        gp.obj[0].worldX= 8 * gp.tileSize;
+        gp.obj[0].worldY= 7 * gp.tileSize;
 
         gp.obj[1] =new OBJ_hut();
         gp.obj[1].worldX= 1 * gp.tileSize;
@@ -57,6 +57,10 @@ public class AssetSetter {
         gp.obj[11] =new OBJ_Trap();
         gp.obj[11].worldX= 3 * gp.tileSize;
         gp.obj[11].worldY= 10 * gp.tileSize;
+
+        gp.obj[12] =new OBJ_chest();
+        gp.obj[12].worldX= 10 * gp.tileSize;
+        gp.obj[12].worldY= 10 * gp.tileSize;
 
 
 

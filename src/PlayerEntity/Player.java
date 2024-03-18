@@ -25,6 +25,9 @@ public class Player extends PlayerEntity {
         solidArea.width=48;
         solidArea.height=48;
 
+        solidAreaDX= solidArea.x;
+        solidAreaDY= solidArea.y;
+
 
         setDefaultValues();
         getPlayerImage();
@@ -68,67 +71,90 @@ public class Player extends PlayerEntity {
     }
 
     public void update() {
-        // Update the player's position and animation based on keyboard input
-        if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
-            // Update player position and direction based on the pressed key
-            if (keyH.upPressed) {
-                direction = "up";
-                // Move up
-            } else if (keyH.downPressed) {
-                direction = "down";
-                // Move down
-            } else if (keyH.leftPressed) {
-                direction = "left";
-                // Move left
-            } else if (keyH.rightPressed) {
-                direction = "right";
-                // Move right
-            }
+        if (!moving) {
+            if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
+                setDirectionAndTargetPosition();
 
-            //check tile collision
-            collisionOn = false;
-            gp.cChecker.checkTile(this);
-
-            // player collision
-
-            if (collisionOn==false) {
-
-                switch (direction){
-                    case "up":
-                        worldY -= speed;
-                        break;
-                    case "down":
-                        worldY += speed;
-                        break;
-                    case "left":
-                        worldX -= speed;
-                        break;
-                    case "right":
-                        worldX += speed;
-                        break;
+                // Check for collision at target position
+                collisionOn = gp.cChecker.checkTileCollision(this, targetX, targetY);
+                if (!collisionOn) {
+                    moving = true;
                 }
 
-
-            }
-
-            // Update sprite animation
-            spriteCounter++;
-            if (spriteCounter > 7) {
-                if (spriteNum == 1) {
-                    spriteNum = 2;
-                } else if (spriteNum == 2) {
-                    spriteNum = 3;
-                } else if (spriteNum == 3) {
-                    spriteNum = 4;
-                } else if (spriteNum == 4) {
-                    spriteNum = 1;
-                }
-                spriteCounter = 0;
-
+                // Reset the key pressed state
+                if (keyH.upPressed) keyH.upPressed = false;
+                if (keyH.downPressed) keyH.downPressed = false;
+                if (keyH.leftPressed) keyH.leftPressed = false;
+                if (keyH.rightPressed) keyH.rightPressed = false;
             }
         }
 
+        if (moving) {
+            moveTowardsTarget();
+            updateAnimation();
+        }
     }
+
+    private void setDirectionAndTargetPosition() {
+        int tileSize = gp.tileSize;
+
+        if (keyH.upPressed) {
+            direction = "up";
+            targetX = worldX;
+            targetY = worldY - tileSize;
+        } else if (keyH.downPressed) {
+            direction = "down";
+            targetX = worldX;
+            targetY = worldY + tileSize;
+        } else if (keyH.leftPressed) {
+            direction = "left";
+            targetX = worldX - tileSize;
+            targetY = worldY;
+        } else if (keyH.rightPressed) {
+            direction = "right";
+            targetX = worldX + tileSize;
+            targetY = worldY;
+        }
+    }
+
+    private void moveTowardsTarget() {
+        if (Math.abs(targetX - worldX) > speed) {
+            worldX += speed * (targetX > worldX ? 1 : -1);
+        } else {
+            worldX = targetX;
+        }
+
+        if (Math.abs(targetY - worldY) > speed) {
+            worldY += speed * (targetY > worldY ? 1 : -1);
+        } else {
+            worldY = targetY;
+        }
+
+        // Stop moving when the target is reached
+        if (worldX == targetX && worldY == targetY) {
+            moving = false;
+        }
+    }
+    private void updateAnimation() {
+        // Your sprite animation update logic here
+        spriteCounter++;
+        if (spriteCounter > 7) {
+            if (spriteNum == 1) {
+                spriteNum = 2;
+            } else if (spriteNum == 2) {
+                spriteNum = 3;
+            } else if (spriteNum == 3) {
+                spriteNum = 4;
+            } else if (spriteNum == 4) {
+                spriteNum = 1;
+            }
+            spriteCounter = 0;
+
+        }
+    }
+
+
+
 
     public void draw(Graphics2D g2) {
         BufferedImage image = null;

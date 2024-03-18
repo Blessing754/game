@@ -25,6 +25,9 @@ public class Player extends PlayerEntity {
         solidArea.width=48;
         solidArea.height=48;
 
+        solidAreaDX= solidArea.x;
+        solidAreaDY= solidArea.y;
+
 
         setDefaultValues();
         getPlayerImage();
@@ -89,6 +92,10 @@ public class Player extends PlayerEntity {
             collisionOn = false;
             gp.cChecker.checkTile(this);
 
+            // check object collision
+            int objIndex = gp.cChecker.checkObject(this,true);
+            pickUpObject(objIndex);
+
             // player collision
 
             if (collisionOn==false) {
@@ -128,6 +135,12 @@ public class Player extends PlayerEntity {
             }
         }
 
+    }
+
+    public void pickUpObject(int i){
+        if(i != 999){
+            gp.obj[i] =null;
+        }
     }
 
     public void draw(Graphics2D g2) {

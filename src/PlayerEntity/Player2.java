@@ -107,6 +107,9 @@ public class Player2 extends PlayerEntity {
             collisionOn = false;
             gp.cChecker.checkTile(this);
 
+            int objIndex = gp.cChecker.checkObject(this,true);
+
+
             // player collision
 
             if (collisionOn==false) {

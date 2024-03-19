@@ -26,4 +26,14 @@ public class PlayerEntity {
 
     public int solidAreaDX, solidAreaDY;
     public boolean collisionOn = false;
+
+    public int health;
+    public int money;
+    public int power;
+
+    public PlayerEntity() {
+        this.health = 100; // Assuming default health
+        this.money = 500; // Assuming default money
+        this.power = 10;  // Assuming default power
+    }
 }

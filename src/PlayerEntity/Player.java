@@ -15,6 +15,8 @@ public class Player extends PlayerEntity {
     GamePanel gp;
     KeyHandler keyH;
 
+    int hasKey=0;
+
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
@@ -75,13 +77,11 @@ public class Player extends PlayerEntity {
             if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
                 setDirectionAndTargetPosition();
 
-                // Check for collision at target position
                 collisionOn = gp.cChecker.checkTileCollision(this, targetX, targetY);
                 if (!collisionOn) {
                     moving = true;
                 }
 
-                // Reset the key pressed state
                 if (keyH.upPressed) keyH.upPressed = false;
                 if (keyH.downPressed) keyH.downPressed = false;
                 if (keyH.leftPressed) keyH.leftPressed = false;
@@ -92,6 +92,32 @@ public class Player extends PlayerEntity {
         if (moving) {
             moveTowardsTarget();
             updateAnimation();
+        }
+
+        int objIndex = gp.cChecker.checkObject(this,true);
+        pickUpObject(objIndex);
+    }
+
+    public void pickUpObject(int i) {
+        if (i != 999) {
+            String ObjectName = gp.obj[i].name;
+
+            switch(ObjectName){
+                case "Key":
+                    hasKey++;
+                    gp.obj[i] = null;
+                    System.out.println("key:"+hasKey);
+                    break;
+
+                case "Castle" :
+                    if (hasKey >= 3){
+                        gp.obj[i] = null;
+                        hasKey--;
+                    }
+                    System.out.println("key:"+hasKey);
+
+                    break;
+            }
         }
     }
 

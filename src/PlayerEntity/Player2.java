@@ -12,6 +12,7 @@ public class Player2 extends PlayerEntity {
 
     GamePanel gp;
     KeyHandler keyH;
+    int hasKeyP2 = 0;
 
     public Player2(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
@@ -105,6 +106,31 @@ public class Player2 extends PlayerEntity {
         if (moving) {
             moveTowardsTargetP2();
             updateAnimationP2();
+        }
+        int objIndex = gp.cChecker.checkObject(this,true);
+        pickUpObject(objIndex);
+    }
+
+    public void pickUpObject(int i) {
+        if (i != 999) {
+            String ObjectName = gp.obj[i].name;
+
+            switch(ObjectName){
+                case "Key":
+                    hasKeyP2++;
+                    gp.obj[i] = null;
+                    System.out.println("key for P2:"+hasKeyP2);
+                    break;
+
+                case "Castle" :
+                    if (hasKeyP2 >= 3){
+                        gp.obj[i] = null;
+                        hasKeyP2--;
+                    }
+                    System.out.println("key for P2:"+hasKeyP2);
+
+                    break;
+            }
         }
     }
     private void setDirectionAndTargetPositionP2() {

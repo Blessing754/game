@@ -4,11 +4,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class PlayerEntity {
-
-    //public int x,y;
-    public int worldX,worldY;
+    // Attributes
+    public int worldX, worldY;
     public int speed;
-
     public BufferedImage up1, up2, up3, up4, down1, down2, down3, down4, left1, left2, left3, left4,
             right1, right2, right3, right4;
     public BufferedImage
@@ -21,19 +19,86 @@ public class PlayerEntity {
     public boolean moving = false;
     public int spriteCounter = 0;
     public int spriteNum = 1;
-
     public Rectangle solidArea;
-
     public int solidAreaDX, solidAreaDY;
     public boolean collisionOn = false;
 
-    public int health;
-    public int money;
-    public int power;
+    private int health;
+    private int money;
+    private int power;
+    private int startingX, startingY; // Starting position
+    private String name;
 
-    public PlayerEntity() {
-        this.health = 100; // Assuming default health
-        this.money = 500; // Assuming default money
-        this.power = 10;  // Assuming default power
+    // Constructor
+    public PlayerEntity(String name, int startingX, int startingY) {
+        this.name = name;
+        this.startingX = startingX;
+        this.startingY = startingY;
+        this.health = 100; // Default health value
+        this.money = 500; // Default money value
+        this.power = 10;  // Default power value
+        // Initialize other attributes as necessary
     }
+
+    public PlayerEntity(int startX, int startY, int startSpeed) {
+        // Set starting positions and speed
+        worldX = startX;
+        worldY = startY;
+        speed = startSpeed;
+        // Initialize other fields as needed
+    }
+
+    // No-argument constructor
+    public PlayerEntity() {
+        // Call parameterized constructor with default values
+        this(0, 0, 0); // Default positions (0,0) and speed of 0
+    }
+
+    // Getters and Setters
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
+    }
+
+    public int getPower() {
+        return power;
+    }
+
+    public void setPower(int power) {
+        this.power = power;
+    }
+
+    public void resetPosition() {
+        this.worldX = startingX;
+        this.worldY = startingY;
+        // Reset other movement-related attributes as needed
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getWorldX() {
+        return worldX;
+    }
+
+    public int getWorldY() {
+        return worldY;
+    }
+
+    // You may also want to implement a method to update the player's sprite based on direction and movement
+
+
+    // Implement methods to draw the player and handle other logic as needed.
 }

@@ -8,6 +8,7 @@ public class KeyHandler implements KeyListener {
     // Flags for Player 1
     public boolean upPressed, downPressed, leftPressed, rightPressed;
     private boolean canMoveUp = true, canMoveDown = true, canMoveLeft = true, canMoveRight = true;
+    public boolean rPressed;
 
     // Flags for Player 2
     public boolean wPressed, sPressed, aPressed, dPressed;
@@ -59,6 +60,9 @@ public class KeyHandler implements KeyListener {
             dPressed = true;
             canMoveD = false;
         }
+        if (code == KeyEvent.VK_R) {
+            rPressed = true;
+        }
     }
 
     @Override
@@ -100,6 +104,10 @@ public class KeyHandler implements KeyListener {
             dPressed = false;
             canMoveD = true;
         }
+        if (code == KeyEvent.VK_R) {
+            rPressed = false;
+        }
+
 
     }
 }

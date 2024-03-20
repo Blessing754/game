@@ -8,16 +8,27 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
+import java.util.Random;
+
 public class Player extends PlayerEntity {
 
     public int screenX;
     public int screenY;
+    private int stepsRemaining;
+
+    private int money; // Add money property
+    private int strength; // Add strength property
+    private int startingX = 768; // Your starting X, assuming it's a constant
+    private int startingY = 384; // Your starting Y, assuming it's a constant
+    private Dice dice;
+
     GamePanel gp;
     KeyHandler keyH;
 
     int hasKey=0;
 
-    public Player(GamePanel gp, KeyHandler keyH) {
+    public Player(GamePanel gp, KeyHandler keyH, int health, int money, int power) {
+        super(health, money, power);
         this.gp = gp;
         this.keyH = keyH;
 
@@ -30,10 +41,16 @@ public class Player extends PlayerEntity {
         solidAreaDX= solidArea.x;
         solidAreaDY= solidArea.y;
 
+        dice = new Dice();
 
         setDefaultValues();
         getPlayerImage();
+
+        this.money = 100; // Initialize with some money
+        this.strength = 10; // Initialize with some strength
     }
+
+
 
     public void setDefaultValues() {
 
@@ -73,30 +90,48 @@ public class Player extends PlayerEntity {
     }
 
     public void update() {
-        if (!moving) {
-            if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
+        if (gp.turnManager.isPlayerTurn(this) && !moving) {
+            // Player must press 'R' to roll the dice if steps are 0.
+            if (stepsRemaining == 0 && keyH.rPressed) {
+                stepsRemaining = dice.roll();
+                System.out.println("Dice rolled: " + stepsRemaining + " steps.");
+                keyH.rPressed = false; // Reset the dice roll flag to prevent multiple rolls in one turn.
+            }
+
+            // Proceed with the movement if the dice has been rolled.
+            if (stepsRemaining > 0 && (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed)) {
                 setDirectionAndTargetPosition();
 
                 collisionOn = gp.cChecker.checkTileCollision(this, targetX, targetY);
                 if (!collisionOn) {
                     moving = true;
+                    stepsRemaining--; // Decrement steps after each move
                 }
 
+                // Reset movement keys to prevent continuous movement
                 if (keyH.upPressed) keyH.upPressed = false;
                 if (keyH.downPressed) keyH.downPressed = false;
                 if (keyH.leftPressed) keyH.leftPressed = false;
                 if (keyH.rightPressed) keyH.rightPressed = false;
+
+                // End the player's turn if they have no more steps to move
+                if (stepsRemaining == 0) {
+                    gp.turnManager.endTurn();
+                }
             }
         }
 
+        // If in motion, continue moving towards the target
         if (moving) {
             moveTowardsTarget();
             updateAnimation();
         }
 
-        int objIndex = gp.cChecker.checkObject(this,true);
+        // Check for object interactions
+        int objIndex = gp.cChecker.checkObject(this, true);
         pickUpObject(objIndex);
     }
+
 
     public void pickUpObject(int i) {
         if (i != 999) {

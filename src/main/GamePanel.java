@@ -4,10 +4,12 @@ import PlayerEntity.Player;
 import PlayerEntity.Player2;
 import object.SuperObject;
 import tile.TileManager;
+import PlayerEntity.BattleSystem;
+
 
 import java.awt.*;
 import javax.swing.*;
-
+import PlayerEntity.PlayerEntity;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -22,7 +24,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public final int screenWidth = tileSize * maxScreenCol; // 1056 px
     public final int screenHeight = tileSize * maxScreenRow; // 1056 px
-
+    public main.TurnManager turnManager;
 
     // World settings
     public final int maxWorldCol =14;
@@ -40,9 +42,13 @@ public class GamePanel extends JPanel implements Runnable {
     Thread gameThread;
     public CollisionChecker cChecker = new CollisionChecker(this);
     public AssetSetter aSetter = new AssetSetter(this);
-    public Player player = new Player (this,keyH);
-    Player2 player2 = new Player2(this, keyH);
+    Player player = new Player(this, keyH, 100, 500, 50); // Player 1 with health=100, money=500, power=10
+    Player2 player2 = new Player2(this, keyH, 100, 300, 12); // Player 2 with different attributes
+
     public SuperObject obj [] = new SuperObject[50];
+    BattleSystem battleSystem = new BattleSystem();
+
+
 
 
 
@@ -58,7 +64,11 @@ public class GamePanel extends JPanel implements Runnable {
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
+        PlayerEntity[] playerEntities = {player, player2};
+        battleSystem = new BattleSystem();
 
+
+        turnManager = new main.TurnManager(playerEntities);
 
     }
 
@@ -117,13 +127,16 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    public void update() {
-
+    public  void update() {
         player.update();
         player2.update();
 
+        // Battle logic
+        if (player.getWorldX() == player2.getWorldX() && player.getWorldY() == player2.getWorldY()) {
+            // Engage in battle
+            battleSystem.engageBattle(player, player2);
+        }
     }
-
 
 
     @Override

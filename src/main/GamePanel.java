@@ -15,19 +15,20 @@ public class GamePanel extends JPanel implements Runnable {
 
     // screen settings
 
-    final int OriginalTileSize = 32; // 32*32 pixels Tile size
-    final int scale = 2;
+    // Screen settings
+    final int OriginalTileSize = 32; // Original size of tiles (32x32 pixels)
+    final int scale = 2; // Scaling factor for the tiles
 
+    // Calculating scaled tile size and screen dimensions
     public final int tileSize = OriginalTileSize * scale;
     public final int maxScreenCol = 14;
     public final int maxScreenRow = 14;
-
-    public final int screenWidth = tileSize * maxScreenCol; // 1056 px
-    public final int screenHeight = tileSize * maxScreenRow; // 1056 px
+    public final int screenWidth = tileSize * maxScreenCol; // 896 pixels
+    public final int screenHeight = tileSize * maxScreenRow; // 896 pixels
     public main.TurnManager turnManager;
 
     // World settings
-    public final int maxWorldCol =14;
+    public final int maxWorldCol = 14;
     public final int maxWorldRow = 14;
     public final int worldWidth = tileSize * maxWorldCol;
     public final int worldHeight = tileSize * maxWorldRow;
@@ -36,53 +37,50 @@ public class GamePanel extends JPanel implements Runnable {
 
 
 
-    TileManager tileM = new TileManager(this);
-
-    KeyHandler keyH = new KeyHandler();
-    Thread gameThread;
-    public CollisionChecker cChecker = new CollisionChecker(this);
-    public AssetSetter aSetter = new AssetSetter(this);
-    Player player = new Player(this, keyH, 100, 500, 50); // Player 1 with health=100, money=500, power=10
-    Player2 player2 = new Player2(this, keyH, 100, 300, 12); // Player 2 with different attributes
-
-    public SuperObject obj [] = new SuperObject[50];
-    BattleSystem battleSystem = new BattleSystem();
-
+    // Game object instances
+    TileManager tileM = new TileManager(this); // Manages the tiles in the game
+    KeyHandler keyH = new KeyHandler(); // Handles keyboard input
+    Thread gameThread; // Thread for the game loop
+    public CollisionChecker cChecker = new CollisionChecker(this); // Checks for collisions
+    public AssetSetter aSetter = new AssetSetter(this); // Sets up game assets
+    Player player = new Player(this, keyH, 100, 500, 50); // Player entity
+    Player2 player2 = new Player2(this, keyH, 100, 300, 12); // Second player entity
+    public SuperObject obj[] = new SuperObject[50]; // Array for storing objects in the game
+    BattleSystem battleSystem = new BattleSystem(); // Handles battle mechanics
 
 
 
 
-    //set player default position
+
+
+    // Player default position and speed
     int playerX = 100;
     int playerY = 100;
     int playerSpeed = 5;
 
     public GamePanel() {
-        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-        this.setBackground(Color.black);
-        startGameThread();
-        this.setDoubleBuffered(true);
-        this.addKeyListener(keyH);
-        this.setFocusable(true);
+        this.setPreferredSize(new Dimension(screenWidth, screenHeight)); // Set preferred size of the panel
+        this.setBackground(Color.black); // Set the background color
+        this.setDoubleBuffered(true); // Enable double buffering
+        this.addKeyListener(keyH); // Add the key handler
+        this.setFocusable(true); // Set focusable to true to receive keyboard inputs
         PlayerEntity[] playerEntities = {player, player2};
-        battleSystem = new BattleSystem();
-
-
         turnManager = new main.TurnManager(playerEntities);
+        startGameThread(); // Start the game thread
 
     }
 
     public void setupGame() {
-        aSetter.setObject();
+        aSetter.setObject(); // Initialize game objects
     }
 
 
     public void startGameThread() {
         gameThread = new Thread(this);
-        gameThread.start();
+        gameThread.start(); // Start the game thread
     }
 
-    @Override
+        @Override
     public void run() {
         // Game loop for updating and rendering the game at a consistent rate
         double drawInterval = (double) 1000000000 / FPS; // Time between draws in nanoseconds
@@ -128,16 +126,14 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public  void update() {
-        player.update();
-        player2.update();
+        player.update(); // Update player 1
+        player2.update(); // Update player 2
 
-        // Battle logic
-        if (player.getWorldX() == player2.getWorldX() && player.getWorldY() == player2.getWorldY()) {
-            // Engage in battle
-            battleSystem.engageBattle(player, player2);
+        // Check for battles
+        if(player.getWorldX() == player2.getWorldX() && player.getWorldY() == player2.getWorldY()) {
+            battleSystem.engageBattle(player, player2); // Engage in battle
         }
     }
-
 
     @Override
     protected void paintComponent(Graphics g) {

@@ -24,6 +24,7 @@ public class Player extends PlayerEntity {
 
     GamePanel gp;
     KeyHandler keyH;
+    int sword=0;
 
     int hasKey=0;
 
@@ -152,6 +153,13 @@ public class Player extends PlayerEntity {
                     System.out.println("key:"+hasKey);
 
                     break;
+
+
+//                case "sword":
+//                    sword++;
+//                    gp.obj[i] = null;
+//                    System.out.println("sword:"+sword);
+//                    break;
             }
         }
     }

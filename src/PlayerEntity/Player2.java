@@ -15,6 +15,7 @@ public class Player2 extends PlayerEntity {
     private int stepsRemaining;
     private Dice dice;
     int hasKeyP2 = 0;
+    int swordP2=0;
 
     public Player2(GamePanel gp, KeyHandler keyH, int health, int money, int power) {
         super(health, money, power);
@@ -152,8 +153,14 @@ public class Player2 extends PlayerEntity {
                         hasKeyP2--;
                     }
                     System.out.println("key for P2:"+hasKeyP2);
-
                     break;
+
+//                case "sword":
+//
+//                    swordP2++;
+//                    gp.obj[i] = null;
+//                    System.out.println("swordP2:"+swordP2);
+//                    break;
             }
         }
     }

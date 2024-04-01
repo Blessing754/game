@@ -18,8 +18,6 @@ public class Player extends PlayerEntity {
 
     private int money; // Add money property
     private int strength; // Add strength property
-    private int startingX = 768; // Your starting X, assuming it's a constant
-    private int startingY = 384; // Your starting Y, assuming it's a constant
     private Dice dice;
 
     GamePanel gp;
@@ -46,9 +44,12 @@ public class Player extends PlayerEntity {
 
         setDefaultValues();
         getPlayerImage();
-
-        this.money = 100; // Initialize with some money
-        this.strength = 10; // Initialize with some strength
+        this.name = "Player 1";
+        startingX = 768; // Your starting X, assuming it's a constant
+        startingY = 384; // Your starting Y, assuming it's a constant
+        this.setHealth(200);
+        this.setMoney(500); // Initialize with some money
+        this.setPower(150); // Initialize with some strength
     }
 
 
@@ -94,6 +95,7 @@ public class Player extends PlayerEntity {
         if (gp.turnManager.isPlayerTurn(this) && !moving) {
             // Player must press 'R' to roll the dice if steps are 0.
             if (stepsRemaining == 0 && keyH.rPressed) {
+                movingTurn = true;
                 stepsRemaining = dice.roll();
                 System.out.println("Dice rolled: " + stepsRemaining + " steps.");
                 keyH.rPressed = false; // Reset the dice roll flag to prevent multiple rolls in one turn.
@@ -117,6 +119,7 @@ public class Player extends PlayerEntity {
 
                 // End the player's turn if they have no more steps to move
                 if (stepsRemaining == 0) {
+                    movingTurn = false;
                     gp.turnManager.endTurn();
                 }
             }
@@ -131,6 +134,7 @@ public class Player extends PlayerEntity {
         // Check for object interactions
         int objIndex = gp.cChecker.checkObject(this, true);
         pickUpObject(objIndex);
+        //System.out.println("Player 1: " + worldX + " and " + worldY);
     }
 
 

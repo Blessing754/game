@@ -18,7 +18,7 @@ public class Player2 extends PlayerEntity {
     int swordP2=0;
 
     public Player2(GamePanel gp, KeyHandler keyH, int health, int money, int power) {
-        super(health, money, power);
+        //super(health, money, power);
         this.gp = gp;
         this.keyH = keyH;
 
@@ -33,9 +33,15 @@ public class Player2 extends PlayerEntity {
         setDefaultValuesP2();
         getPlayerImageP2();
         getPlayerImageP2();
+        this.name = "Player 2";
+        this.setHealth(200);
+        this.setMoney(600); // Initialize with some money
+        this.setPower(200); // Initialize with some strength
     }
 
     public void setDefaultValuesP2() {
+        this.startingX = 64;
+        this.startingY = 384;
         worldX =64;
         worldY =384;
         speed = 2;
@@ -96,6 +102,7 @@ public class Player2 extends PlayerEntity {
         if (gp.turnManager.isPlayerTurn(this) && !moving) {
             // Player 2 must press 'R' to roll the dice if steps are 0.
             if (stepsRemaining == 0 && keyH.rPressed) {
+                movingTurn = true;
                 stepsRemaining = dice.roll();
                 System.out.println("Player 2 rolled: " + stepsRemaining + " steps.");
                 keyH.rPressed = false; // Reset the dice roll flag to prevent multiple rolls in one turn.
@@ -120,8 +127,10 @@ public class Player2 extends PlayerEntity {
                 // End the player's turn if they have no more steps to move
                 if (stepsRemaining == 0) {
                     gp.turnManager.endTurn();
+                    movingTurn = false;
                 }
             }
+            //System.out.println(worldX + " and " + worldY);
         }
 
         // If in motion, continue moving towards the target
@@ -133,6 +142,7 @@ public class Player2 extends PlayerEntity {
         // Check for object interactions
         int objIndex = gp.cChecker.checkObject(this, true);
         pickUpObject(objIndex);
+        //System.out.println("Player 2: " + worldX + " and " + worldY);
     }
 
 

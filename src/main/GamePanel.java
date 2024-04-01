@@ -130,9 +130,12 @@ public class GamePanel extends JPanel implements Runnable {
         player2.update(); // Update player 2
 
         // Check for battles
-        if(player.getWorldX() == player2.getWorldX() && player.getWorldY() == player2.getWorldY()) {
-            battleSystem.engageBattle(player, player2); // Engage in battle
+        if (!player.movingTurn && !player2.movingTurn) {
+            if(player.getWorldX() == player2.getWorldX() && player.getWorldY() == player2.getWorldY()) {
+                battleSystem.engageBattle(player, player2); // Engage in battle
+            }
         }
+
     }
 
     @Override

@@ -17,6 +17,7 @@ public class PlayerEntity {
     public String direction;
     public int targetX, targetY;
     public boolean moving = false;
+    public boolean movingTurn = false;
     public int spriteCounter = 0;
     public int spriteNum = 1;
     public Rectangle solidArea;
@@ -26,8 +27,8 @@ public class PlayerEntity {
     private int health;
     private int money;
     private int power;
-    private int startingX, startingY; // Starting position
-    private String name;
+    public int startingX, startingY; // Starting position
+    public String name;
 
     // Constructor
     public PlayerEntity(String name, int startingX, int startingY) {
@@ -85,9 +86,9 @@ public class PlayerEntity {
         // Reset other movement-related attributes as needed
     }
 
-    public String getName() {
-        return name;
-    }
+    //public String getName() {return name;}
+
+    //public String setName(String name) {this.name = name;}
 
     public int getWorldX() {
         return worldX;

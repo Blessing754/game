@@ -15,6 +15,7 @@ public class BattleSystem {
             // Compare the power of both players
             if (player1.getPower() == player2.getPower()) {
                 // In case of a tie (equal power), the method returns, ending the battle
+                System.out.println("Tie");
                 return; // Alternatively, you can add logic to handle a tie scenario
             } else if (player1.getPower() > player2.getPower()) {
                 // If player 1 is stronger, player 1 wins, player 2 loses
@@ -38,15 +39,17 @@ public class BattleSystem {
             loser.resetPosition();
 
             // Print out the result of the battle to the console for logging purposes
-            System.out.println(winner.getName() + " wins, taking " + moneyTransfer + " money from " + loser.getName());
-            System.out.println(loser.getName() + " is sent back to starting position.");
+            System.out.println(winner.name + " wins, taking " + moneyTransfer + " money from " + loser.name);
+            System.out.println(loser.name + " is sent back to starting position.");
+            printStats(winner);
+            printStats(loser);
         }
     }
 
     // Method to print a player's stats to the console
     public void printStats(PlayerEntity player) {
         // Displaying various statistics of the player, likely after a battle
-        System.out.println(player.getName() + "'s Stats after battle:");
+        System.out.println(player.name + "'s Stats after battle:");
         System.out.println("Health: " + player.getHealth()); // Shows player's health
         System.out.println("Power: " + player.getPower());  // Shows player's power level
         System.out.println("Money: " + player.getMoney());  // Shows player's money

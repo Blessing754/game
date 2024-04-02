@@ -34,9 +34,9 @@ public class Player2 extends PlayerEntity {
         getPlayerImageP2();
         getPlayerImageP2();
         this.name = "Player 2";
-        this.setHealth(200);
-        this.setMoney(600); // Initialize with some money
-        this.setPower(200); // Initialize with some strength
+        this.setHealth(health);
+        this.setMoney(money); // Initialize with some money
+        this.setPower(power); // Initialize with some strength
     }
 
     public void setDefaultValuesP2() {

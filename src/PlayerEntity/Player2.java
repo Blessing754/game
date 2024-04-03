@@ -48,6 +48,19 @@ public class Player2 extends PlayerEntity {
     public int getMoney() {
         return this.money;
     }
+    public Weapon getEquippedWeapon() {
+        return equippedWeapon;
+    }
+    public List<Weapon> getInventory() {
+        return inventory;
+    }
+    public int getStepsRemaining() {
+        return stepsRemaining;
+    }
+
+    public void setStepsRemaining(int stepsRemaining) {
+        this.stepsRemaining = stepsRemaining;
+    }
 
     public void setDefaultValuesP2() {
         this.startingX = 64;
@@ -86,9 +99,28 @@ public class Player2 extends PlayerEntity {
         int totalStrength = this.power; // Assuming getPower() returns base strength
         if (equippedWeapon != null) {
             totalStrength += equippedWeapon.getStrengthBonus();
+            power +=equippedWeapon.getStrengthBonus();
         }
         return totalStrength;
     }
+    public void equipWeapon(Weapon weapon) {
+        if (this.inventory.contains(weapon)) {
+            // If there's already an equipped weapon, remove its bonus before switching
+            if (this.equippedWeapon != null) {
+                // Subtract the strength bonus of the currently equipped weapon
+                this.power -= this.equippedWeapon.getStrengthBonus();
+            }
+
+            // Equip the new weapon
+            this.equippedWeapon = weapon;
+            // Add the strength bonus of the new weapon to the player's power
+            this.power += weapon.getStrengthBonus();
+            System.out.println(weapon.getName() + " has been equipped. New power is: " + this.power);
+        } else {
+            System.out.println(weapon.getName() + " cannot be equipped because it is not in the inventory.");
+        }
+    }
+
     public void getPlayerImageP2() {
         try {
             up1_p2 = ImageIO.read(getClass().getResourceAsStream("/player2/up1.png"));

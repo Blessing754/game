@@ -81,6 +81,14 @@ public class Player extends PlayerEntity {
     public List<Weapon> getInventory() {
         return inventory;
     }
+    public int getStepsRemaining() {
+        return stepsRemaining;
+    }
+
+    // Setter for stepsRemaining
+    public void setStepsRemaining(int stepsRemaining) {
+        this.stepsRemaining = stepsRemaining;
+    }
     public void getPlayerImage() {
 
         try {
@@ -317,15 +325,24 @@ public class Player extends PlayerEntity {
             return false; // Indicate the purchase did not happen
         }
     }
-    // Method to equip a weapon
     public void equipWeapon(Weapon weapon) {
         if (this.inventory.contains(weapon)) {
-            this.equippedWeapon = weapon; // Equip the weapon if it's in the inventory
-            System.out.println(weapon.getName() + " has been equipped.");
+            // If there's already an equipped weapon, remove its bonus before switching
+            if (this.equippedWeapon != null) {
+                // Subtract the strength bonus of the currently equipped weapon
+                this.power -= this.equippedWeapon.getStrengthBonus();
+            }
+
+            // Equip the new weapon
+            this.equippedWeapon = weapon;
+            // Add the strength bonus of the new weapon to the player's power
+            this.power += weapon.getStrengthBonus();
+            System.out.println(weapon.getName() + " has been equipped. New power is: " + this.power);
         } else {
             System.out.println(weapon.getName() + " cannot be equipped because it is not in the inventory.");
         }
     }
+
 
     public int calculateTotalStrength() {
         int totalStrength = this.power;

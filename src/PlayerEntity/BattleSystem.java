@@ -7,7 +7,6 @@ public class BattleSystem {
         if (player1.getWorldX() == player2.getWorldX() && player1.getWorldY() == player2.getWorldY()) {
             PlayerEntity winner, loser;
 
-            // Directly using PlayerEntity; assumes calculateTotalStrength() and getMoney() are defined in PlayerEntity
             int player1Strength = player1.calculateTotalStrength();
             int player2Strength = player2.calculateTotalStrength();
 
@@ -24,11 +23,9 @@ public class BattleSystem {
 
             int moneyTransfer = Math.min((winner.calculateTotalStrength() - loser.calculateTotalStrength()) * loser.getMoney() / (winner.calculateTotalStrength() + loser.calculateTotalStrength()), loser.getMoney());
 
-            // Assuming setMoney() is defined in PlayerEntity or appropriate casting is done
             winner.setMoney(winner.getMoney() + moneyTransfer);
             loser.setMoney(loser.getMoney() - moneyTransfer);
 
-            // Assumes resetPosition() is defined in PlayerEntity
             loser.resetPosition();
 
             int loserStrength = loser.getPower();  // Assuming getPower() returns the player's current strength

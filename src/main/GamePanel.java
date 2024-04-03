@@ -6,6 +6,7 @@ import object.SuperObject;
 import tile.TileManager;
 import PlayerEntity.BattleSystem;
 import object.Weapon;
+import main.StatusBoard;
 
 
 import java.awt.*;
@@ -37,8 +38,6 @@ public class GamePanel extends JPanel implements Runnable {
 
     int FPS = 60;
 
-
-    // Game object instances
     TileManager tileM = new TileManager(this); // Manages the tiles in the game
     KeyHandler keyH = new KeyHandler(); // Handles keyboard input
     Thread gameThread; // Thread for the game loop
@@ -48,6 +47,7 @@ public class GamePanel extends JPanel implements Runnable {
     Player2 player2 = new Player2(this, keyH, 100, 300, 12); // Second player entity
     public SuperObject obj[] = new SuperObject[50]; // Array for storing objects in the game
     BattleSystem battleSystem = new BattleSystem(); // Handles battle mechanics
+    private StatusBoard statusBoard;
 
 
     // Player default position and speed
@@ -56,15 +56,19 @@ public class GamePanel extends JPanel implements Runnable {
     int playerSpeed = 5;
 
     public GamePanel() {
-        this.setPreferredSize(new Dimension(screenWidth, screenHeight)); // Set preferred size of the panel
-        this.setBackground(Color.black); // Set the background color
-        this.setDoubleBuffered(true); // Enable double buffering
-        this.addKeyListener(keyH); // Add the key handler
-        this.setFocusable(true); // Set focusable to true to receive keyboard inputs
+        // Other initialization...
+        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+        this.setBackground(Color.black);
+        this.setDoubleBuffered(true);
+        this.addKeyListener(keyH);
+        this.setFocusable(true);
         PlayerEntity[] playerEntities = {player, player2};
         turnManager = new main.TurnManager(playerEntities);
-        startGameThread(); // Start the game thread
 
+
+        statusBoard = new StatusBoard(player, player2);
+
+        startGameThread();
     }
 
     public void setupGame() {
@@ -123,17 +127,16 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
-        player.update(); // Update player 1
-        player2.update(); // Update player 2
+        player.update();
+        player2.update();
         checkCollision(); // Check for collisions between the player and huts
         refreshGamePanel(); // Refresh the display after processing updates
         // Check for battles
-            if (player.getWorldX() == player2.getWorldX() && player.getWorldY() == player2.getWorldY()) {
-                battleSystem.engageBattle(player, player2); // Engage in battle
-            }
+        if (player.getWorldX() == player2.getWorldX() && player.getWorldY() == player2.getWorldY()) {
+            battleSystem.engageBattle(player, player2); // Engage in battle
+        }
 
     }
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -150,8 +153,14 @@ public class GamePanel extends JPanel implements Runnable {
         player.draw(g2);
         player2.draw(g2);
         drawGrid(g);
+
+        // Now use the new render method to draw the status board
+        statusBoard.render(g2);
+
         g2.dispose();
     }
+
+
 
     private void drawGrid(Graphics g) {
         g.setColor(Color.black);

@@ -3,6 +3,7 @@ import object.Weapon;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerEntity {
     // Attributes
@@ -24,7 +25,7 @@ public class PlayerEntity {
     public Rectangle solidArea = new Rectangle(); // Initialized to prevent null reference
     public int solidAreaDX, solidAreaDY;
     public boolean collisionOn = false;
-
+    public int stepsRemaining;
     private int health;
     public int money;
     public int power;
@@ -104,7 +105,16 @@ public class PlayerEntity {
     }
 
     public int getMoney() { return this.money; }
+    public List<Weapon> getInventory() {
+        return inventory;
+    }
 
+    public int getStepsRemaining() {
+        return stepsRemaining;
+    }
+    public void setStepsRemaining(int stepsRemaining) {
+        this.stepsRemaining = stepsRemaining;
+    }
     public void resetPosition() {
         this.worldX = startingX;
         this.worldY = startingY;

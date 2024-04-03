@@ -5,11 +5,13 @@ import PlayerEntity.Player2;
 import object.SuperObject;
 import tile.TileManager;
 import PlayerEntity.BattleSystem;
+import object.Weapon;
 
 
 import java.awt.*;
 import javax.swing.*;
 import PlayerEntity.PlayerEntity;
+import object.OBJ_House;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -33,8 +35,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int worldWidth = tileSize * maxWorldCol;
     public final int worldHeight = tileSize * maxWorldRow;
 
-    int FPS =60;
-
+    int FPS = 60;
 
 
     // Game object instances
@@ -47,10 +48,6 @@ public class GamePanel extends JPanel implements Runnable {
     Player2 player2 = new Player2(this, keyH, 100, 300, 12); // Second player entity
     public SuperObject obj[] = new SuperObject[50]; // Array for storing objects in the game
     BattleSystem battleSystem = new BattleSystem(); // Handles battle mechanics
-
-
-
-
 
 
     // Player default position and speed
@@ -80,7 +77,7 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread.start(); // Start the game thread
     }
 
-        @Override
+    @Override
     public void run() {
         // Game loop for updating and rendering the game at a consistent rate
         double drawInterval = (double) 1000000000 / FPS; // Time between draws in nanoseconds
@@ -125,40 +122,35 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    public  void update() {
+    public void update() {
         player.update(); // Update player 1
         player2.update(); // Update player 2
-
+        checkCollision(); // Check for collisions between the player and huts
+        refreshGamePanel(); // Refresh the display after processing updates
         // Check for battles
-        if (!player.movingTurn && !player2.movingTurn) {
-            if(player.getWorldX() == player2.getWorldX() && player.getWorldY() == player2.getWorldY()) {
+            if (player.getWorldX() == player2.getWorldX() && player.getWorldY() == player2.getWorldY()) {
                 battleSystem.engageBattle(player, player2); // Engage in battle
             }
-        }
 
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        // to add the grid to the map
-        Graphics2D g2 = (Graphics2D)g;
+        Graphics2D g2 = (Graphics2D) g;
 
         tileM.draw(g2);
 
-        // object
-        for(int i =0; i<obj.length; i++) {
-            if (obj[i]!= null){
+        for (int i = 0; i < obj.length; i++) {
+            if (obj[i] != null) {
                 obj[i].draw(g2, this);
             }
-
         }
 
         player.draw(g2);
         player2.draw(g2);
         drawGrid(g);
         g2.dispose();
-
     }
 
     private void drawGrid(Graphics g) {
@@ -173,5 +165,86 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    public boolean isPlayerCloseToHouse(Player player, OBJ_House house) {
+        // Calculate the distance between Player and the house
+        double distance = Math.sqrt(Math.pow(player.worldX - house.worldX, 2) + Math.pow(player.worldY - house.worldY, 2));
+        final int interactionRadius = 50; // Interaction radius in pixels
+        return distance <= interactionRadius; // Check if within interaction radius
+    }
 
+    // Overloaded method for Player2
+    public boolean isPlayerCloseToHouse(Player2 player2, OBJ_House house) {
+        // Calculate the distance between Player2 and the house
+        double distance = Math.sqrt(Math.pow(player2.worldX - house.worldX, 2) + Math.pow(player2.worldY - house.worldY, 2));
+        final int interactionRadius = 50; // Interaction radius in pixels
+        return distance <= interactionRadius; // Check if within interaction radius
+    }
+
+    public void checkCollision() {
+        for (int i = 0; i < obj.length; i++) {
+            if (obj[i] instanceof OBJ_House) {
+                OBJ_House house = (OBJ_House) obj[i];
+                if (isPlayerCloseToHouse(player, house)) {
+                    int moneyCollected = house.collectItems();
+                    if (moneyCollected > 0) {
+                        player.addMoney(moneyCollected);
+                        obj[i] = null;  // Remove the house after interaction
+                    }
+                } else if (isPlayerCloseToHouse(player2, house)) {
+                    int moneyCollected = house.collectItems();
+                    if (moneyCollected > 0) {
+                        player2.addMoney(moneyCollected);
+                        obj[i] = null;  // Remove the house after interaction
+                    }
+                }
+            }
+
+            if (obj[i] instanceof Weapon) {
+                if (isPlayerCloseToWeapon(player, obj[i])) {
+                    handleWeaponInteraction(player, obj[i], i);
+                } else if (isPlayerCloseToWeapon(player2, obj[i])) {
+                    handleWeaponInteraction(player2, obj[i], i);
+                }
+            }
+        }
+    }
+
+    // New method within GamePanel to manage weapon interactions
+    private void handleWeaponInteraction(PlayerEntity player, SuperObject weapon, int index) {
+        if (weapon instanceof Weapon && ((Weapon) weapon).isInteractable()) {
+            Weapon actualWeapon = (Weapon) weapon;
+            if (!actualWeapon.hasBeenInteracted()) {
+                boolean purchased = false;
+                if (player instanceof Player) {
+                    Player p = (Player) player;
+                    purchased = p.purchaseWeapon(actualWeapon);
+                    if (purchased) {
+                        p.equipWeapon(actualWeapon);  // Equip the weapon
+                    }
+                } else if (player instanceof Player2) {
+                    Player2 p2 = (Player2) player;
+                    purchased = p2.purchaseWeapon(actualWeapon);
+                    if (purchased) {
+                        p2.equipWeapon(actualWeapon);  // Equip the weapon
+                    }
+                }
+
+                if (purchased) {
+                    actualWeapon.setHasBeenInteracted(true);
+                    obj[index] = null;  // Remove the weapon from the game
+                }
+            }
+        }
+    }
+
+    public boolean isPlayerCloseToWeapon(PlayerEntity player, SuperObject weapon) {
+        // Determine if player is close enough to interact with the weapon
+        double distance = Math.sqrt(Math.pow(player.worldX - weapon.worldX, 2) + Math.pow(player.worldY - weapon.worldY, 2));
+        final int interactionRadius = 50;  // Define an interaction radius
+        return distance <= interactionRadius;
+    }
+
+    public void refreshGamePanel() {
+        this.repaint();  // Calls the paintComponent method to redraw the game panel
+    }
 }

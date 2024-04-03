@@ -2,12 +2,14 @@ package PlayerEntity;
 
 import main.GamePanel;
 import main.KeyHandler;
+import object.Weapon;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
+import java.util.ArrayList;
+import java.util.List;
 public class Player2 extends PlayerEntity {
 
     GamePanel gp;
@@ -15,10 +17,10 @@ public class Player2 extends PlayerEntity {
     private int stepsRemaining;
     private Dice dice;
     int hasKeyP2 = 0;
-    int swordP2=0;
-
+    private List<Weapon> inventory = new ArrayList<>();
+    private Weapon equippedWeapon;
     public Player2(GamePanel gp, KeyHandler keyH, int health, int money, int power) {
-        //super(health, money, power);
+        //super(200, 600, 200);
         this.gp = gp;
         this.keyH = keyH;
 
@@ -28,15 +30,23 @@ public class Player2 extends PlayerEntity {
         solidArea.width=48;
         solidArea.height=48;
 
-
         dice = new Dice();
         setDefaultValuesP2();
         getPlayerImageP2();
         getPlayerImageP2();
         this.name = "Player 2";
+        this.setMoney(600);
         this.setHealth(200);
-        this.setMoney(600); // Initialize with some money
-        this.setPower(200); // Initialize with some strength
+        this.setPower(200);
+    }
+    public void setMoney(int money) {
+        this.money = money;
+    }
+
+
+    @Override
+    public int getMoney() {
+        return this.money;
     }
 
     public void setDefaultValuesP2() {
@@ -47,7 +57,38 @@ public class Player2 extends PlayerEntity {
         speed = 2;
         direction = null;
     }
+    public void addMoney(int amount) {
+        this.money = money+ amount;
+        System.out.println("Player Money Updated: " + this.money);
+    }
+    @Override
+    public boolean purchaseWeapon(Weapon weapon) {
+        // Check if the weapon is already in the inventory
+        if (inventory.contains(weapon)) {
+            System.out.println(this.name + " already owns " + weapon.getName() + ".");
+            return false; // Indicate the purchase did not happen
+        }
 
+        // Check if the player has enough money to purchase the weapon
+        if (this.money >= weapon.getPrice()) {
+            this.money -= weapon.getPrice(); // Deduct the weapon's cost from the player's money
+            inventory.add(weapon); // Add the weapon to the player's inventory
+            System.out.println(this.name + " purchased " + weapon.getName() + ".");
+            return true; // Indicate a successful purchase
+        } else {
+            System.out.println(this.name + " does not have enough money to purchase " + weapon.getName() + ".");
+            return false; // Indicate the purchase did not happen
+        }
+    }
+
+
+    public int calculateTotalStrength() {
+        int totalStrength = this.power; // Assuming getPower() returns base strength
+        if (equippedWeapon != null) {
+            totalStrength += equippedWeapon.getStrengthBonus();
+        }
+        return totalStrength;
+    }
     public void getPlayerImageP2() {
         try {
             up1_p2 = ImageIO.read(getClass().getResourceAsStream("/player2/up1.png"));
@@ -164,13 +205,6 @@ public class Player2 extends PlayerEntity {
                     }
                     System.out.println("key for P2:"+hasKeyP2);
                     break;
-
-//                case "sword":
-//
-//                    swordP2++;
-//                    gp.obj[i] = null;
-//                    System.out.println("swordP2:"+swordP2);
-//                    break;
             }
         }
     }
@@ -240,9 +274,6 @@ public class Player2 extends PlayerEntity {
 
         }
     }
-
-
-
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
 

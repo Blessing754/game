@@ -171,5 +171,13 @@ public void getTileImage()  {
     }
 
     }
+    public void setTileToGrass(int x, int y) {
+        mapTileNum[2][5] = 13;
+        mapTileNum[9][5] = 13;
+        mapTileNum[10][2] = 13;
+        mapTileNum[5][7] = 13;
+        mapTileNum[5][9] = 13;
+        mapTileNum[10][9] = 13;
+    }
 
 }

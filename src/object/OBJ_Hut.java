@@ -3,8 +3,8 @@ package object;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 
-public class OBJ_hut extends SuperObject{
-    public OBJ_hut() {
+public class OBJ_m2 extends  SuperObject {
+    public OBJ_m2() {
         name = "hut";
 
         try {

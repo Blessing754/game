@@ -1,5 +1,7 @@
 package PlayerEntity; // Declares the package for organization, PlayerEntity in this case
 
+import javax.swing.*;
+
 // Definition of the BattleSystem class
 public class BattleSystem {
 
@@ -41,18 +43,13 @@ public class BattleSystem {
             // Print out the result of the battle to the console for logging purposes
             System.out.println(winner.name + " wins, taking " + moneyTransfer + " money from " + loser.name);
             System.out.println(loser.name + " is sent back to starting position.");
-            printStats(winner);
-            printStats(loser);
+            battleStatWindow(winner);
+            battleStatWindow(loser);
         }
     }
 
-    // Method to print a player's stats to the console
-    public void printStats(PlayerEntity player) {
-        // Displaying various statistics of the player, likely after a battle
-        System.out.println(player.name + "'s Stats after battle:");
-        System.out.println("Health: " + player.getHealth()); // Shows player's health
-        System.out.println("Power: " + player.getPower());  // Shows player's power level
-        System.out.println("Money: " + player.getMoney());  // Shows player's money
-        System.out.println("--------------------------------"); // End of the stats display
+    private static void battleStatWindow(PlayerEntity player) {
+        JOptionPane.showMessageDialog(null, player.name + "'s stats after battle:\nHealth: " + player.getHealth() + "\nPower: " + player.getPower() + "\nMoney: " + player.getMoney(), "Battle Outcome", JOptionPane.PLAIN_MESSAGE);
     }
+
 }

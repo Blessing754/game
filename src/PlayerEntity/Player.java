@@ -47,9 +47,9 @@ public class Player extends PlayerEntity {
         this.name = "Player 1";
         startingX = 768; // Your starting X, assuming it's a constant
         startingY = 384; // Your starting Y, assuming it's a constant
-        this.setHealth(200);
-        this.setMoney(500); // Initialize with some money
-        this.setPower(150); // Initialize with some strength
+        this.setHealth(health);
+        this.setMoney(money); // Initialize with some money
+        this.setPower(power); // Initialize with some strength
     }
 
 

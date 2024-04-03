@@ -1,5 +1,6 @@
 package PlayerEntity;
 
+import javax.swing.*;
 
 public class BattleSystem {
 
@@ -40,21 +41,14 @@ public class BattleSystem {
             }
 
             System.out.println(winner.getName() + " wins the battle against " + loser.getName());
-            printStats(winner);
-            printStats(loser);
+            battleStatWindow(winner);
+            battleStatWindow(loser);
         }
     }
 
-    // Assuming printStats can accept PlayerEntity and the necessary methods are available in PlayerEntity
-    public void printStats(PlayerEntity player) {
-        System.out.println(player.getName() + "'s Stats after battle:");
-        System.out.println("Health: " + player.getHealth());
-        System.out.println("Power: " + player.getPower());
-        System.out.println("Total Strength: " + player.calculateTotalStrength());
-        System.out.println("Money: " + player.getMoney());
-        // Assuming getEquippedWeapon() and related weapon details are accessible from PlayerEntity
-        System.out.println("Equipped Weapon: " + (player.getEquippedWeapon() != null ? player.getEquippedWeapon().getName() : "None"));
-        System.out.println("--------------------------------");
+    private static void battleStatWindow(PlayerEntity player) {
+        JOptionPane.showMessageDialog(null, player.name + "'s stats after battle:\nHealth: " + player.getHealth() + "\nTotal Strength: " + player.calculateTotalStrength() + "\nMoney: " + player.getMoney() + "\nEquipped Weapon: " + (player.getEquippedWeapon() != null ? player.getEquippedWeapon().getName() : "None"), "Battle Outcome", JOptionPane.PLAIN_MESSAGE);
     }
+
 
 }

@@ -1,5 +1,6 @@
 package PlayerEntity;
 
+
 public class BattleSystem {
 
     // Handles the battle considering the `PlayerEntity` type for both participants
@@ -28,6 +29,7 @@ public class BattleSystem {
 
             loser.resetPosition();
 
+
             int loserStrength = loser.getPower();  // Assuming getPower() returns the player's current strength
             loser.setPower(0);  // Set the loser's strength to zero
             winner.setPower(winner.getPower() - loserStrength);  // Reduce the winner's strength
@@ -54,4 +56,5 @@ public class BattleSystem {
         System.out.println("Equipped Weapon: " + (player.getEquippedWeapon() != null ? player.getEquippedWeapon().getName() : "None"));
         System.out.println("--------------------------------");
     }
+
 }

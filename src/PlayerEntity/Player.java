@@ -55,6 +55,7 @@ public class Player extends PlayerEntity {
         this.setHealth(200);
         this.setPower(150); // Initialize with some strength
         this.inventory = new ArrayList<>();
+
     }
 
     public void setMoney(int money) {

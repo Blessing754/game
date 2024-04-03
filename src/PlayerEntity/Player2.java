@@ -60,6 +60,7 @@ public class Player2 extends PlayerEntity {
 
     public void setStepsRemaining(int stepsRemaining) {
         this.stepsRemaining = stepsRemaining;
+
     }
 
     public void setDefaultValuesP2() {

@@ -2,6 +2,7 @@ package PlayerEntity;
 
 import main.GamePanel;
 import main.KeyHandler;
+import object.Weapon;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -9,6 +10,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Player extends PlayerEntity {
 
@@ -16,29 +19,30 @@ public class Player extends PlayerEntity {
     public int screenY;
     private int stepsRemaining;
 
-    private int money; // Add money property
+    public int money; // Add money property
     private int strength; // Add strength property
     private Dice dice;
-
+    private List<Weapon> inventory;
+    private Weapon equippedWeapon;
     GamePanel gp;
     KeyHandler keyH;
-    int sword=0;
+    int sword = 0;
 
-    int hasKey=0;
+    int hasKey = 0;
 
     public Player(GamePanel gp, KeyHandler keyH, int health, int money, int power) {
-        super(health, money, power);
+        //super(200, 500, 150);
         this.gp = gp;
         this.keyH = keyH;
 
         solidArea = new Rectangle();
-        solidArea.x=8;
-        solidArea.y=16;
-        solidArea.width=48;
-        solidArea.height=48;
+        solidArea.x = 8;
+        solidArea.y = 16;
+        solidArea.width = 48;
+        solidArea.height = 48;
 
-        solidAreaDX= solidArea.x;
-        solidAreaDY= solidArea.y;
+        solidAreaDX = solidArea.x;
+        solidAreaDY = solidArea.y;
 
         dice = new Dice();
 
@@ -47,12 +51,16 @@ public class Player extends PlayerEntity {
         this.name = "Player 1";
         startingX = 768; // Your starting X, assuming it's a constant
         startingY = 384; // Your starting Y, assuming it's a constant
-        this.setHealth(health);
-        this.setMoney(money); // Initialize with some money
-        this.setPower(power); // Initialize with some strength
+        this.setMoney(500);
+        this.setHealth(200);
+        this.setPower(150); // Initialize with some strength
+        this.inventory = new ArrayList<>();
+
     }
 
-
+    public void setMoney(int money) {
+        this.money = money;
+    }
 
     public void setDefaultValues() {
 
@@ -62,6 +70,26 @@ public class Player extends PlayerEntity {
         direction = null;
     }
 
+    public void addMoney(int amount) {
+        this.money += amount;
+        System.out.println("Player Money Updated: " + this.money);
+    }
+
+    @Override
+    public int getMoney() {
+        return this.money;
+    }
+    public List<Weapon> getInventory() {
+        return inventory;
+    }
+    public int getStepsRemaining() {
+        return stepsRemaining;
+    }
+
+    // Setter for stepsRemaining
+    public void setStepsRemaining(int stepsRemaining) {
+        this.stepsRemaining = stepsRemaining;
+    }
     public void getPlayerImage() {
 
         try {
@@ -142,28 +170,22 @@ public class Player extends PlayerEntity {
         if (i != 999) {
             String ObjectName = gp.obj[i].name;
 
-            switch(ObjectName){
+            switch (ObjectName) {
                 case "Key":
                     hasKey++;
                     gp.obj[i] = null;
-                    System.out.println("key:"+hasKey);
+                    System.out.println("key:" + hasKey);
                     break;
 
-                case "Castle" :
-                    if (hasKey >= 3){
+                case "Castle":
+                    if (hasKey >= 3) {
                         gp.obj[i] = null;
                         hasKey--;
                     }
-                    System.out.println("key:"+hasKey);
+                    System.out.println("key:" + hasKey);
 
                     break;
 
-
-//                case "sword":
-//                    sword++;
-//                    gp.obj[i] = null;
-//                    System.out.println("sword:"+sword);
-//                    break;
             }
         }
     }
@@ -208,6 +230,7 @@ public class Player extends PlayerEntity {
             moving = false;
         }
     }
+
     private void updateAnimation() {
         // Your sprite animation update logic here
         spriteCounter++;
@@ -226,9 +249,6 @@ public class Player extends PlayerEntity {
         }
     }
 
-
-
-
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
 
@@ -238,42 +258,33 @@ public class Player extends PlayerEntity {
                 case "up":
                     if (spriteNum == 1) {
                         image = up1;
-                    }
-                    else if (spriteNum == 2) {
+                    } else if (spriteNum == 2) {
                         image = up2;
-                    }
-                    else if (spriteNum == 3) {
+                    } else if (spriteNum == 3) {
                         image = up3;
-                    }
-                    else if (spriteNum == 4) {
+                    } else if (spriteNum == 4) {
                         image = up4;
                     }
                     break;
                 case "down":
                     if (spriteNum == 1) {
                         image = down1;
-                    }
-                    else if (spriteNum == 2) {
+                    } else if (spriteNum == 2) {
                         image = down2;
-                    }
-                    else if (spriteNum == 3) {
+                    } else if (spriteNum == 3) {
                         image = down3;
-                    }
-                    else if (spriteNum == 4) {
+                    } else if (spriteNum == 4) {
                         image = down4;
                     }
                     break;
                 case "left":
                     if (spriteNum == 1) {
                         image = left1;
-                    }
-                    else if (spriteNum == 2) {
+                    } else if (spriteNum == 2) {
                         image = left2;
-                    }
-                    else if (spriteNum == 3) {
+                    } else if (spriteNum == 3) {
                         image = left3;
-                    }
-                    else if (spriteNum == 4) {
+                    } else if (spriteNum == 4) {
                         image = left4;
                     }
 
@@ -281,14 +292,11 @@ public class Player extends PlayerEntity {
                 case "right":
                     if (spriteNum == 1) {
                         image = right1;
-                    }
-                    else if (spriteNum == 2) {
+                    } else if (spriteNum == 2) {
                         image = right2;
-                    }
-                    else if (spriteNum == 3) {
+                    } else if (spriteNum == 3) {
                         image = right3;
-                    }
-                    else if (spriteNum == 4) {
+                    } else if (spriteNum == 4) {
                         image = right4;
                     }
                     break;
@@ -298,5 +306,55 @@ public class Player extends PlayerEntity {
             image = down1_p2; // Default image
         }
         g2.drawImage(image, worldX, worldY, gp.tileSize, gp.tileSize, null);
+    }
+    @Override
+    public boolean purchaseWeapon(Weapon weapon) {
+        // Check if the weapon is already in the inventory
+        if (inventory.contains(weapon)) {
+            System.out.println(this.name + " already owns " + weapon.getName() + ".");
+            return false; // Indicate the purchase did not happen
+        }
+
+        // Check if the player has enough money to purchase the weapon
+        if (this.money >= weapon.getPrice()) {
+            this.money -= weapon.getPrice(); // Deduct the weapon's cost from the player's money
+            inventory.add(weapon); // Add the weapon to the player's inventory
+            System.out.println(this.name + " purchased " + weapon.getName() + ".");
+            return true; // Indicate a successful purchase
+        } else {
+            System.out.println(this.name + " does not have enough money to purchase " + weapon.getName() + ".");
+            return false; // Indicate the purchase did not happen
+        }
+    }
+    public void equipWeapon(Weapon weapon) {
+        if (this.inventory.contains(weapon)) {
+            // If there's already an equipped weapon, remove its bonus before switching
+            if (this.equippedWeapon != null) {
+                // Subtract the strength bonus of the currently equipped weapon
+                this.power -= this.equippedWeapon.getStrengthBonus();
+            }
+
+            // Equip the new weapon
+            this.equippedWeapon = weapon;
+            // Add the strength bonus of the new weapon to the player's power
+            this.power += weapon.getStrengthBonus();
+            System.out.println(weapon.getName() + " has been equipped. New power is: " + this.power);
+        } else {
+            System.out.println(weapon.getName() + " cannot be equipped because it is not in the inventory.");
+        }
+    }
+
+
+    public int calculateTotalStrength() {
+        int totalStrength = this.power;
+        if (equippedWeapon != null) {
+            totalStrength += equippedWeapon.getStrengthBonus();
+        }
+        return totalStrength;
+    }
+
+
+    public Weapon getEquippedWeapon() {
+        return equippedWeapon;
     }
 }

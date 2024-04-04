@@ -1,4 +1,5 @@
 package main;
+import object.*;
 
 import PlayerEntity.Player;
 import PlayerEntity.Player2;
@@ -7,8 +8,8 @@ import tile.TileManager;
 import PlayerEntity.BattleSystem;
 import object.Weapon;
 import main.StatusBoard;
-
-
+import object.OBJ_Chest;
+import object.OBJ_Trap;
 import java.awt.*;
 import javax.swing.*;
 import PlayerEntity.PlayerEntity;
@@ -131,12 +132,14 @@ public class GamePanel extends JPanel implements Runnable {
         player2.update();
         checkCollision(); // Check for collisions between the player and huts
         refreshGamePanel(); // Refresh the display after processing updates
+        statusBoard.updatePlayerStats();
         // Check for battles
         if (player.getWorldX() == player2.getWorldX() && player.getWorldY() == player2.getWorldY()) {
             battleSystem.engageBattle(player, player2); // Engage in battle
         }
 
     }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -161,7 +164,6 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
 
-
     private void drawGrid(Graphics g) {
         g.setColor(Color.black);
         // Draw the vertical lines
@@ -174,86 +176,153 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    public boolean isPlayerCloseToHouse(Player player, OBJ_House house) {
-        // Calculate the distance between Player and the house
-        double distance = Math.sqrt(Math.pow(player.worldX - house.worldX, 2) + Math.pow(player.worldY - house.worldY, 2));
-        final int interactionRadius = 50; // Interaction radius in pixels
-        return distance <= interactionRadius; // Check if within interaction radius
-    }
-
-    // Overloaded method for Player2
-    public boolean isPlayerCloseToHouse(Player2 player2, OBJ_House house) {
-        // Calculate the distance between Player2 and the house
-        double distance = Math.sqrt(Math.pow(player2.worldX - house.worldX, 2) + Math.pow(player2.worldY - house.worldY, 2));
-        final int interactionRadius = 50; // Interaction radius in pixels
-        return distance <= interactionRadius; // Check if within interaction radius
-    }
 
     public void checkCollision() {
         for (int i = 0; i < obj.length; i++) {
             if (obj[i] instanceof OBJ_House) {
                 OBJ_House house = (OBJ_House) obj[i];
-                if (isPlayerCloseToHouse(player, house)) {
-                    int moneyCollected = house.collectItems();
-                    if (moneyCollected > 0) {
-                        player.addMoney(moneyCollected);
-                        obj[i] = null;  // Remove the house after interaction
-                    }
-                } else if (isPlayerCloseToHouse(player2, house)) {
-                    int moneyCollected = house.collectItems();
-                    if (moneyCollected > 0) {
-                        player2.addMoney(moneyCollected);
-                        obj[i] = null;  // Remove the house after interaction
-                    }
-                }
-            }
-
-            if (obj[i] instanceof Weapon) {
-                if (isPlayerCloseToWeapon(player, obj[i])) {
-                    handleWeaponInteraction(player, obj[i], i);
-                } else if (isPlayerCloseToWeapon(player2, obj[i])) {
-                    handleWeaponInteraction(player2, obj[i], i);
-                }
+                // Check and handle interactions for both players with the house
+                interactWithHouse(player, house, i);
+                interactWithHouse(player2, house, i);
+            } else if (obj[i] instanceof OBJ_Chest) {
+                // Check and handle interactions for both players with the chest
+                interactWithChest(player, (OBJ_Chest) obj[i], i);
+                interactWithChest(player2, (OBJ_Chest) obj[i], i);
+            } else if (obj[i] instanceof OBJ_Trap) {
+                // Check and handle interactions for both players with the trap
+                interactWithTrap(player, (OBJ_Trap) obj[i], i);
+                interactWithTrap(player2, (OBJ_Trap) obj[i], i);
             }
         }
     }
 
-    // New method within GamePanel to manage weapon interactions
-    private void handleWeaponInteraction(PlayerEntity player, SuperObject weapon, int index) {
-        if (weapon instanceof Weapon && ((Weapon) weapon).isInteractable()) {
-            Weapon actualWeapon = (Weapon) weapon;
-            if (!actualWeapon.hasBeenInteracted()) {
-                boolean purchased = false;
-                if (player instanceof Player) {
-                    Player p = (Player) player;
-                    purchased = p.purchaseWeapon(actualWeapon);
-                    if (purchased) {
-                        p.equipWeapon(actualWeapon);  // Equip the weapon
-                    }
-                } else if (player instanceof Player2) {
-                    Player2 p2 = (Player2) player;
-                    purchased = p2.purchaseWeapon(actualWeapon);
-                    if (purchased) {
-                        p2.equipWeapon(actualWeapon);  // Equip the weapon
-                    }
-                }
-
-                if (purchased) {
-                    actualWeapon.setHasBeenInteracted(true);
-                    obj[index] = null;  // Remove the weapon from the game
-                }
+    private void interactWithHouse(PlayerEntity player, OBJ_House house, int index) {
+        if (house != null && isPlayerCloseToHouse(player, house)) {
+            int moneyCollected = house.collectItems();
+            if (moneyCollected > 0) {
+                player.addMoney(moneyCollected);
+                obj[index] = null; // Remove the house after interaction
             }
         }
     }
 
-    public boolean isPlayerCloseToWeapon(PlayerEntity player, SuperObject weapon) {
-        // Determine if player is close enough to interact with the weapon
-        double distance = Math.sqrt(Math.pow(player.worldX - weapon.worldX, 2) + Math.pow(player.worldY - weapon.worldY, 2));
-        final int interactionRadius = 50;  // Define an interaction radius
+    public boolean isPlayerCloseToHouse(PlayerEntity player, OBJ_House house) {
+        // Calculate the distance between the player and the house
+        double distance = Math.sqrt(Math.pow(player.getWorldX() - house.worldX, 2) + Math.pow(player.getWorldY() - house.worldY, 2));
+        final int interactionRadius = 50; // Interaction radius in pixels
+        return distance <= interactionRadius; // Check if within interaction radius
+    }
+
+    private void interactWithChest(PlayerEntity player, OBJ_Chest chest, int index) {
+        if (chest != null && chest.collision && isPlayerCloseToChest(player, chest)) {
+            SuperObject treasure = chest.getTreasure(); // Get the pre-generated treasure
+            showTreasurePopup(treasure); // Show popup with the treasure name
+
+            handleTreasure(player, treasure); // Handle the treasure obtained from the chest
+
+            chest.collision = false; // Mark chest as interacted
+            obj[index] = null; // Remove the chest from the game
+        }
+    }
+
+    private void handleTreasure(PlayerEntity player, SuperObject treasure) {
+        if (treasure instanceof Weapon) {
+            handleWeapon(player, (Weapon) treasure);
+        } else if (treasure instanceof OBJ_paladinShield) {
+            handleShield(player, (OBJ_paladinShield) treasure);
+        } else if (treasure instanceof OBJ_woodenbow) {
+            handleBow(player, (OBJ_woodenbow) treasure);
+        } else if (treasure instanceof OBJ_JewelEncrustedSword) {
+            handleSword(player, (OBJ_JewelEncrustedSword) treasure);
+        } else if (treasure instanceof OBJ_GoldenGoblet || treasure instanceof OBJ_CrystalGoblet) {
+            handleGoblet(player, (SuperObject) treasure);
+        } else if (treasure instanceof OBJ_Key || treasure instanceof OBJ_Diamondring) {
+            handleMoney(player, (SuperObject) treasure);
+        } else if (treasure instanceof OBJ_dragonscroll) {
+            handlePower(player, (OBJ_dragonscroll) treasure);
+        }
+    }
+
+    private void handleWeapon(PlayerEntity player, Weapon weapon) {
+        player.addToInventory(weapon); // Add to inventory
+        player.equipWeapon(weapon); // Equip the weapon
+        player.setPower(player.getPower() + weapon.getStrengthBonus()); // Increase player's power
+    }
+
+    private void handleShield(PlayerEntity player, OBJ_paladinShield shield) {
+        player.addToInventory(shield); // Add to inventory
+        player.equipWeapon(shield); // Equip the shield
+        player.setPower(player.getPower() + shield.getStrengthBonus());
+    }
+
+    private void handleBow(PlayerEntity player, OBJ_woodenbow bow) {
+        player.addToInventory(bow); // Add to inventory
+        player.equipWeapon(bow); // Equip the bow
+        player.setPower(player.getPower() + bow.getStrengthBonus()); // Increase player's power
+    }
+
+    private void handleSword(PlayerEntity player, OBJ_JewelEncrustedSword sword) {
+        player.addToInventory(sword); // Add to inventory
+        player.equipWeapon(sword); // Equip the sword
+        player.setPower(player.getPower() + sword.getStrengthBonus());// Increase player's power
+    }
+    private void handleGoblet(PlayerEntity player, SuperObject goblet) {
+        if (goblet instanceof OBJ_GoldenGoblet) {
+            ((OBJ_GoldenGoblet) goblet).giveHealthToPlayer(player); // Give health bonus to the player
+        } else if (goblet instanceof OBJ_CrystalGoblet) {
+            ((OBJ_CrystalGoblet) goblet).giveHealthToPlayer(player); // Give health bonus to the player
+        } else {
+            System.out.println("Unhandled goblet type: " + goblet.getClass().getSimpleName());
+        }
+    }
+
+
+    private void handleMoney(PlayerEntity player, SuperObject moneyItem) {
+        if (moneyItem instanceof OBJ_Key) {
+            ((OBJ_Key) moneyItem).addMoneyToPlayer(player); // Add money to the player
+        } else if (moneyItem instanceof OBJ_Diamondring) {
+            ((OBJ_Diamondring) moneyItem).addMoneyToPlayer(player); // Add money to the player
+        }
+    }
+
+    private void handlePower(PlayerEntity player, OBJ_dragonscroll dragonScroll) {
+        dragonScroll.addPowerToPlayer(player); // Add power to the player
+    }
+
+
+
+    // Method to show a popup message with the found treasure
+    private void showTreasurePopup(SuperObject treasure) {
+        JOptionPane.showMessageDialog(null, "You found a " + treasure.getName() + "!", "Treasure Found", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+
+    private boolean isPlayerCloseToChest(PlayerEntity player, OBJ_Chest chest) {
+        double distance = Math.sqrt(Math.pow(player.worldX - chest.worldX, 2) + Math.pow(player.worldY - chest.worldY, 2));
+        final int interactionRadius = 50;
         return distance <= interactionRadius;
     }
 
-    public void refreshGamePanel() {
+    private void interactWithTrap(PlayerEntity player, OBJ_Trap trap, int index) {
+        if (trap != null && trap.collision && isPlayerCloseToTrap(player, trap)) {
+            // Assuming there's a method in OBJ_Trap to apply the trap's effect
+            trap.triggerEffect(player);
+            // Optionally, remove or disable the trap after interaction
+            trap.collision = false; // Example: Mark the trap as non-collidable after triggering
+            // If the trap should be removed after triggering, uncomment the next line
+            // obj[index] = null;
+        }
+    }
+
+    private boolean isPlayerCloseToTrap(PlayerEntity player, OBJ_Trap trap) {
+        double distance = Math.sqrt(Math.pow(player.worldX - trap.worldX, 2) + Math.pow(player.worldY - trap.worldY, 2));
+        final int interactionRadius = 50; // Interaction radius in pixels
+        return distance <= interactionRadius;
+    }
+
+
+
+public void refreshGamePanel() {
         this.repaint();  // Calls the paintComponent method to redraw the game panel
     }
 }

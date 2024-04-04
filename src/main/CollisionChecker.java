@@ -51,9 +51,8 @@ public class CollisionChecker {
         return false; // No collision
     }
 
-    // In the CollisionChecker class
-    public int checkObject(PlayerEntity entity, boolean player) {
-        int index = 999;
+    public int checkObject(PlayerEntity entity, boolean isPlayer) {
+        int index = 999; // Assuming 999 is a default value indicating no collision
 
         for (int i = 0; i < gp.obj.length; i++) {
             if (gp.obj[i] != null) {
@@ -65,36 +64,34 @@ public class CollisionChecker {
                 gp.obj[i].solidArea.y = gp.obj[i].worldY + gp.obj[i].solidArea.y;
 
                 // Check for intersection between entity and object solid areas
-                if (entity.solidArea.intersects(gp.obj[i].solidArea)) {
-                    if (gp.obj[i].collision && player) { // Check if collision should be handled
-                        // Handle collision based on object type
-                        if (gp.obj[i] instanceof OBJ_House) {
-                            handleHouseCollision(entity, i);
-                        } else if (gp.obj[i] instanceof OBJ_JewelEncrustedSword || gp.obj[i] instanceof OBJ_paladinShield || gp.obj[i] instanceof OBJ_woodenbow) {
-                            handleWeaponCollision(entity, gp.obj[i], i);
-                        } else if (gp.obj[i] instanceof OBJ_Trap) {
-                            handleTrapCollision(entity, i);
-                        }
-                        index = i; // Mark index of the collided object
+                if (entity.solidArea.intersects(gp.obj[i].solidArea) && gp.obj[i].collision) {
+                    if (gp.obj[i] instanceof OBJ_Chest && isPlayer) {
+                        interactWithChest(entity, (OBJ_Chest) gp.obj[i], i);
+                    } else if (gp.obj[i] instanceof OBJ_House && isPlayer) {
+                        handleHouseCollision(entity, i);
+                    } else if (gp.obj[i] instanceof OBJ_Trap && isPlayer) {
+                        handleTrapCollision(entity, i); // Call the dedicated method for handling trap collisions
                     }
+                    index = i;
                 }
 
-                // Reset solid area positions after checking
                 resetSolidAreas(entity, gp.obj[i]);
             }
         }
         return index;
     }
 
-
     // Reset solid areas after collision checking
     private void resetSolidAreas(PlayerEntity entity, SuperObject obj) {
-        entity.solidArea.x = entity.solidAreaDX;
-        entity.solidArea.y = entity.solidAreaDY;
-        obj.solidArea.x = obj.solidAreaDX;
-        obj.solidArea.y = obj.solidAreaDY;
-    }
+        if (obj != null && obj.solidArea != null) {
+            // Reset the solid areas back to original after the collision check
+            entity.solidArea.x = entity.solidAreaDX;
+            entity.solidArea.y = entity.solidAreaDY;
+            obj.solidArea.x = obj.solidAreaDX;
+            obj.solidArea.y = obj.solidAreaDY;
+        }
 
+    }
     private void handleHouseCollision(PlayerEntity player, int houseIndex) {
         if (houseIndex < 0 || houseIndex >= gp.obj.length) {
             return; // Ensure index is in bounds
@@ -106,24 +103,8 @@ public class CollisionChecker {
             if (house.hasLostItems) {
                 player.addMoney(house.moneyAvailable); // Correctly calling addMoney on the player instance
                 house.hasLostItems = false; // Mark as looted
-                house.changeAppearanceToGrass(); // Visual feedback
                 gp.repaint(); // Refresh display
             }
-        }
-    }
-    private void handleWeaponCollision(PlayerEntity player, SuperObject weapon, int weaponIndex) {
-        if (weapon instanceof Weapon) {
-            Weapon actualWeapon = (Weapon) weapon;
-            // Check if the purchase was successful to ensure the weapon is only removed if it was actually bought
-            boolean purchaseSuccessful = player.purchaseWeapon(actualWeapon);
-            if (purchaseSuccessful) {
-                player.equipWeapon(actualWeapon);
-                gp.obj[weaponIndex] = null;
-                int tileX = weapon.worldX / gp.tileSize;
-                int tileY = weapon.worldY / gp.tileSize;
-                gp.tileM.setTileToGrass(tileX, tileY);
-            }
-            gp.repaint(); // Refresh display to reflect any changes
         }
     }
     private void handleTrapCollision(PlayerEntity player, int trapIndex) {
@@ -134,12 +115,53 @@ public class CollisionChecker {
         SuperObject obj = gp.obj[trapIndex];
         if (obj instanceof OBJ_Trap) {
             OBJ_Trap trap = (OBJ_Trap) obj;
-            player.setMoney(player.getMoney() - trap.moneyPenalty); // Deduct money
-            player.setPower(player.getPower() - trap.powerPenalty); // Deduct power
-            System.out.println(player.getName() + " hit a trap! Money and power penalized.");
-
-            // Do not remove the trap object, allowing it to be triggered multiple times
-            // gp.obj[trapIndex] = null; // This line is removed
+            if (!trap.hasTriggered) { // Check if the trap has already been triggered
+                trap.triggerEffect(player); // Trigger the trap's effect
+                System.out.println(player.getName() + " hit a trap! Money and power penalized.");
+            }
         }
     }
+
+
+    private void interactWithChest(PlayerEntity entity, OBJ_Chest chest, int index) {
+        if (chest.collision) {
+            SuperObject generatedObject = chest.generateRandomTreasure();
+
+            if (generatedObject instanceof OBJ_paladinShield) {
+                OBJ_paladinShield shield = (OBJ_paladinShield) generatedObject;
+                entity.addToInventory(shield); // Add to inventory
+                entity. equipWeapon(shield); // Equip the shield
+                entity.setPower(entity.getPower() + shield.getStrengthBonus());
+            } else if (generatedObject instanceof OBJ_woodenbow) {
+                OBJ_woodenbow bow = (OBJ_woodenbow) generatedObject;
+                entity.addToInventory(bow); // Add to inventory
+                entity. equipWeapon(bow); // Equip the bow
+                entity.setPower(entity.getPower() + bow.getStrengthBonus()); // Increase player's power
+            } else if (generatedObject instanceof OBJ_JewelEncrustedSword) {
+                OBJ_JewelEncrustedSword sword = (OBJ_JewelEncrustedSword) generatedObject;
+                entity.addToInventory(sword); // Add to inventory
+                entity.equipWeapon(sword); // Equip the sword
+                entity.setPower(entity.getPower() + sword.getStrengthBonus());// Increase player's power
+            } else if (generatedObject instanceof OBJ_GoldenGoblet) {
+                OBJ_GoldenGoblet goblet = (OBJ_GoldenGoblet) generatedObject;
+                goblet.giveHealthToPlayer(entity);
+            } else if (generatedObject instanceof OBJ_CrystalGoblet) {
+                OBJ_CrystalGoblet goblet = (OBJ_CrystalGoblet) generatedObject;
+                goblet.giveHealthToPlayer(entity);
+            } else if (generatedObject instanceof OBJ_Key) {
+                OBJ_Key key = (OBJ_Key) generatedObject;
+                key.addMoneyToPlayer(entity);
+            } else if (generatedObject instanceof OBJ_Diamondring) {
+                OBJ_Diamondring diamondRing = (OBJ_Diamondring) generatedObject;
+                diamondRing.addMoneyToPlayer(entity);
+            } else if (generatedObject instanceof OBJ_dragonscroll) {
+                OBJ_dragonscroll dragonScroll = (OBJ_dragonscroll) generatedObject;
+                dragonScroll.addPowerToPlayer(entity);
+            }
+
+            chest.collision = false; // Mark chest as interacted
+            gp.obj[index] = null; // Remove the chest from the game
+        }
+    }
+
 }

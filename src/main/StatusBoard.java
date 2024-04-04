@@ -110,5 +110,10 @@ public class StatusBoard extends JPanel {
         // Draw Player 2's status on the left
         drawPlayerEntityStatus(g2, player2, 10, y, width, height); // Adjusted for Player 2
     }
+    public void updatePlayerStats() {
+        // This method could be called whenever player stats change.
+        // For example, after a player picks up an item, or after a battle resolves.
+        this.repaint(); // Trigger a repaint which will fetch the latest player stats.
+    }
 
 }

@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import object.SuperObject;
 
 public class PlayerEntity {
     // Attributes
@@ -26,15 +27,14 @@ public class PlayerEntity {
     public int solidAreaDX, solidAreaDY;
     public boolean collisionOn = false;
     public int stepsRemaining;
-    private int health;
+    public int health;
     public int money;
     public int power;
     public int startingX, startingY; // Starting position
     public String name;
     private Weapon equippedWeapon;
     private int baseStrength = 10;
-    private ArrayList<Weapon> inventory = new ArrayList<>();
-
+    public ArrayList<SuperObject> inventory = new ArrayList<>();
     // Constructor with parameters
     public PlayerEntity(String name, int health, int money, int power) {
         this.name = name;
@@ -55,37 +55,60 @@ public class PlayerEntity {
     public PlayerEntity() {
         this( 0, 0, 0); // Default name, positions (0,0), and speed of 0
     }
+
     public boolean purchaseWeapon(Weapon weapon) {
-        if (inventory.contains(weapon)) {
+        if (inventory.stream().anyMatch(item -> item instanceof Weapon && ((Weapon)item).getName().equals(weapon.getName()))) {
             System.out.println("Already owns " + weapon.getName());
             return false;
         }
         if (money >= weapon.getPrice()) {
             money -= weapon.getPrice();
-            inventory.add(weapon);
-            equippedWeapon = weapon;  // Or handle equipping separately
+            inventory.add(weapon);  // Add weapon to inventory without equipping
             System.out.println("Purchased " + weapon.getName());
             return true;
         }
         System.out.println("Not enough money to purchase " + weapon.getName());
         return false;
     }
+
     public int calculateTotalStrength() {
-        int totalStrength = this.power; // Start with base strength
+        int totalStrength = this.power;  // Start with base power
         if (equippedWeapon != null) {
-            totalStrength += equippedWeapon.getStrengthBonus(); // Add weapon strength bonus if weapon is equipped
+            totalStrength += equippedWeapon.getStrengthBonus();  // Add weapon strength bonus if equipped
         }
+        // Optionally, iterate over inventory to add bonuses from other items, if applicable
         return totalStrength;
     }
 
     public Weapon getEquippedWeapon() {
         return equippedWeapon;
     }
+    public void addToInventory(SuperObject item) {
+        if (!inventory.contains(item)) {
+            inventory.add(item);
+            System.out.println(this.name + " added " + item.name + " to inventory.");
+        } else {
+            System.out.println(this.name + " already has " + item.name + " in inventory.");
+        }
+    }
 
-    // Method to equip a weapon
+
+    // Improved equipWeapon method with clearer power update logic
     public void equipWeapon(Weapon weapon) {
-        this.equippedWeapon = weapon;
-        System.out.println(this.name + " has equipped " + weapon.getName());
+        if (this.inventory.contains(weapon)) {
+            if (this.equippedWeapon != null) {
+                // If there's an equipped weapon, remove its strength bonus from power
+                this.power -= this.equippedWeapon.getStrengthBonus();
+            }
+
+            // Update equipped weapon and add its strength bonus to power
+            this.equippedWeapon = weapon;
+            this.power += weapon.getStrengthBonus();
+
+            System.out.println(weapon.getName() + " has been equipped. New power: " + this.power);
+        } else {
+            System.out.println("Cannot equip " + weapon.getName() + "; it is not in the inventory.");
+        }
     }
 
 
@@ -97,17 +120,27 @@ public class PlayerEntity {
 
     public void setHealth(int health) { this.health = health; }
     public void setMoney(int money) { this.money = money; }
-    public int getPower() { return power; }
-
-    public void setPower(int power) { this.power = power; }
+    public String getEquippedWeaponName() {
+        return equippedWeapon != null ? equippedWeapon.getName() : "None";
+    }
+public void setPower(int power) {this.power = power;
+}
+    public int getPower() {
+        return power;
+    }
+    public void addPower(int amount) {
+        this.power+=amount;
+    }
     public void addMoney(int amount) {
         this.money += amount;
     }
+    public void heal(int amount) {
+        this.health += amount;
+        System.out.println(amount + " health added to " + this.name + ". New health: " + this.health);
+    }
 
     public int getMoney() { return this.money; }
-    public List<Weapon> getInventory() {
-        return inventory;
-    }
+    public List<SuperObject> getInventory() { return inventory; }
 
     public int getStepsRemaining() {
         return stepsRemaining;

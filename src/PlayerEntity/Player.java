@@ -2,6 +2,7 @@ package PlayerEntity;
 
 import main.GamePanel;
 import main.KeyHandler;
+import object.SuperObject;
 import object.Weapon;
 
 import javax.imageio.ImageIO;
@@ -22,7 +23,6 @@ public class Player extends PlayerEntity {
     public int money; // Add money property
     private int strength; // Add strength property
     private Dice dice;
-    private List<Weapon> inventory;
     private Weapon equippedWeapon;
     GamePanel gp;
     KeyHandler keyH;
@@ -53,8 +53,7 @@ public class Player extends PlayerEntity {
         startingY = 384; // Your starting Y, assuming it's a constant
         this.setMoney(500);
         this.setHealth(200);
-        this.setPower(0); // Initialize with some strength
-        this.inventory = new ArrayList<>();
+        this.setPower(100); // Initialize with some strength
 
     }
 
@@ -79,9 +78,8 @@ public class Player extends PlayerEntity {
     public int getMoney() {
         return this.money;
     }
-    public List<Weapon> getInventory() {
-        return inventory;
-    }
+
+    public List<SuperObject> getInventory() { return inventory; }
     public int getStepsRemaining() {
         return stepsRemaining;
     }
@@ -159,42 +157,8 @@ public class Player extends PlayerEntity {
             updateAnimation();
         }
 
-        // Check for object interactions
-        int objIndex = gp.cChecker.checkObject(this, true);
-        pickUpObject(objIndex);
-        //System.out.println("Player 1: " + worldX + " and " + worldY);
+
     }
-
-
-    public void pickUpObject(int i) {
-        if (i != 999) {
-            String ObjectName = gp.obj[i].name;
-
-            switch (ObjectName) {
-                case "Key":
-                    hasKey++;
-                    gp.obj[i] = null;
-                    System.out.println("key:" + hasKey);
-                    break;
-
-                case "Castle":
-                    if (hasKey >= 3) {
-                        gp.obj[i] = null;
-                        hasKey--;
-                    }
-                    System.out.println("key:" + hasKey);
-
-                    break;
-
-                case "market2":
-                    gp.obj[i] = null;
-                    System.out.println("empty");
-                    break;
-
-            }
-        }
-    }
-
     private void setDirectionAndTargetPosition() {
         int tileSize = gp.tileSize;
 
@@ -315,48 +279,46 @@ public class Player extends PlayerEntity {
     }
     @Override
     public boolean purchaseWeapon(Weapon weapon) {
-        // Check if the weapon is already in the inventory
-        if (inventory.contains(weapon)) {
-            System.out.println(this.name + " already owns " + weapon.getName() + ".");
-            return false; // Indicate the purchase did not happen
+        if (inventory.stream().anyMatch(item -> item instanceof Weapon && ((Weapon)item).getName().equals(weapon.getName()))) {
+            System.out.println("Already owns " + weapon.getName());
+            return false;
         }
+        if (money >= weapon.getPrice()) {
+            money -= weapon.getPrice();
+            inventory.add(weapon);  // Add weapon to inventory without equipping
+            System.out.println("Purchased " + weapon.getName());
+            return true;
+        }
+        System.out.println("Not enough money to purchase " + weapon.getName());
+        return false;
+    }
 
-        // Check if the player has enough money to purchase the weapon
-        if (this.money >= weapon.getPrice()) {
-            this.money -= weapon.getPrice(); // Deduct the weapon's cost from the player's money
-            inventory.add(weapon); // Add the weapon to the player's inventory
-            System.out.println(this.name + " purchased " + weapon.getName() + ".");
-            return true; // Indicate a successful purchase
-        } else {
-            System.out.println(this.name + " does not have enough money to purchase " + weapon.getName() + ".");
-            return false; // Indicate the purchase did not happen
+    public int calculateTotalStrength() {
+        int totalStrength = this.power;  // Start with base power
+        if (equippedWeapon != null) {
+            totalStrength += equippedWeapon.getStrengthBonus();  // Add weapon strength bonus if equipped
         }
+        // Optionally, iterate over inventory to add bonuses from other items, if applicable
+        return totalStrength;
     }
     public void equipWeapon(Weapon weapon) {
         if (this.inventory.contains(weapon)) {
-            // If there's already an equipped weapon, remove its bonus before switching
+            // Check if there's already an equipped weapon and remove its bonuses
             if (this.equippedWeapon != null) {
-                // Subtract the strength bonus of the currently equipped weapon
-                this.power -= this.equippedWeapon.getStrengthBonus();
+                this.power -= this.equippedWeapon.getStrengthBonus();  // Subtract the bonus of the currently equipped weapon
+                System.out.println(this.equippedWeapon.getName() + "'s bonus removed. Power is now: " + this.power);
             }
 
             // Equip the new weapon
             this.equippedWeapon = weapon;
-            // Add the strength bonus of the new weapon to the player's power
+
+            // Add the strength bonus of the new weapon
             this.power += weapon.getStrengthBonus();
-            System.out.println(weapon.getName() + " has been equipped. New power is: " + this.power);
+            System.out.println(weapon.getName() + " has been equipped. Power increased to: " + this.power);
         } else {
-            System.out.println(weapon.getName() + " cannot be equipped because it is not in the inventory.");
+            // The weapon is not in the inventory
+            System.out.println("Cannot equip " + weapon.getName() + "; it is not in the inventory.");
         }
-    }
-
-
-    public int calculateTotalStrength() {
-        int totalStrength = this.power;
-        if (equippedWeapon != null) {
-            totalStrength += equippedWeapon.getStrengthBonus();
-        }
-        return totalStrength;
     }
 
 

@@ -3,7 +3,7 @@ package PlayerEntity;
 import main.GamePanel;
 import main.KeyHandler;
 import object.Weapon;
-
+import object.SuperObject;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -17,7 +17,6 @@ public class Player2 extends PlayerEntity {
     private int stepsRemaining;
     private Dice dice;
     int hasKeyP2 = 0;
-    private List<Weapon> inventory = new ArrayList<>();
     private Weapon equippedWeapon;
     public Player2(GamePanel gp, KeyHandler keyH, int health, int money, int power) {
         //super(200, 600, 200);
@@ -37,7 +36,7 @@ public class Player2 extends PlayerEntity {
         this.name = "Player 2";
         this.setMoney(500);
         this.setHealth(200);
-        this.setPower(0);
+        this.setPower(100);
     }
     public void setMoney(int money) {
         this.money = money;
@@ -51,7 +50,7 @@ public class Player2 extends PlayerEntity {
     public Weapon getEquippedWeapon() {
         return equippedWeapon;
     }
-    public List<Weapon> getInventory() {
+    public List<SuperObject> getInventory() {
         return inventory;
     }
     public int getStepsRemaining() {
@@ -77,50 +76,49 @@ public class Player2 extends PlayerEntity {
     }
     @Override
     public boolean purchaseWeapon(Weapon weapon) {
-        // Check if the weapon is already in the inventory
-        if (inventory.contains(weapon)) {
-            System.out.println(this.name + " already owns " + weapon.getName() + ".");
-            return false; // Indicate the purchase did not happen
+        if (inventory.stream().anyMatch(item -> item instanceof Weapon && ((Weapon)item).getName().equals(weapon.getName()))) {
+            System.out.println("Already owns " + weapon.getName());
+            return false;
         }
-
-        // Check if the player has enough money to purchase the weapon
-        if (this.money >= weapon.getPrice()) {
-            this.money -= weapon.getPrice(); // Deduct the weapon's cost from the player's money
-            inventory.add(weapon); // Add the weapon to the player's inventory
-            System.out.println(this.name + " purchased " + weapon.getName() + ".");
-            return true; // Indicate a successful purchase
-        } else {
-            System.out.println(this.name + " does not have enough money to purchase " + weapon.getName() + ".");
-            return false; // Indicate the purchase did not happen
+        if (money >= weapon.getPrice()) {
+            money -= weapon.getPrice();
+            inventory.add(weapon);  // Add weapon to inventory without equipping
+            System.out.println("Purchased " + weapon.getName());
+            return true;
         }
+        System.out.println("Not enough money to purchase " + weapon.getName());
+        return false;
     }
-
 
     public int calculateTotalStrength() {
-        int totalStrength = this.power; // Assuming getPower() returns base strength
+        int totalStrength = this.power;  // Start with base power
         if (equippedWeapon != null) {
-            totalStrength += equippedWeapon.getStrengthBonus();
-            power +=equippedWeapon.getStrengthBonus();
+            totalStrength += equippedWeapon.getStrengthBonus();  // Add weapon strength bonus if equipped
         }
+        // Optionally, iterate over inventory to add bonuses from other items, if applicable
         return totalStrength;
     }
+
     public void equipWeapon(Weapon weapon) {
         if (this.inventory.contains(weapon)) {
-            // If there's already an equipped weapon, remove its bonus before switching
+            // Check if there's already an equipped weapon and remove its bonuses
             if (this.equippedWeapon != null) {
-                // Subtract the strength bonus of the currently equipped weapon
-                this.power -= this.equippedWeapon.getStrengthBonus();
+                this.power -= this.equippedWeapon.getStrengthBonus();  // Subtract the bonus of the currently equipped weapon
+                System.out.println(this.equippedWeapon.getName() + "'s bonus removed. Power is now: " + this.power);
             }
 
             // Equip the new weapon
             this.equippedWeapon = weapon;
-            // Add the strength bonus of the new weapon to the player's power
+
+            // Add the strength bonus of the new weapon
             this.power += weapon.getStrengthBonus();
-            System.out.println(weapon.getName() + " has been equipped. New power is: " + this.power);
+            System.out.println(weapon.getName() + " has been equipped. Power increased to: " + this.power);
         } else {
-            System.out.println(weapon.getName() + " cannot be equipped because it is not in the inventory.");
+            // The weapon is not in the inventory
+            System.out.println("Cannot equip " + weapon.getName() + "; it is not in the inventory.");
         }
     }
+
 
     public void getPlayerImageP2() {
         try {
@@ -211,40 +209,6 @@ public class Player2 extends PlayerEntity {
         if (moving) {
             moveTowardsTargetP2();
             updateAnimationP2();
-        }
-
-        // Check for object interactions
-        int objIndex = gp.cChecker.checkObject(this, true);
-        pickUpObject(objIndex);
-        //System.out.println("Player 2: " + worldX + " and " + worldY);
-    }
-
-
-    public void pickUpObject(int i) {
-        if (i != 999) {
-            String ObjectName = gp.obj[i].name;
-
-            switch(ObjectName){
-                case "Key":
-                    hasKeyP2++;
-                    gp.obj[i] = null;
-                    System.out.println("key for P2:"+hasKeyP2);
-                    break;
-
-                case "Castle" :
-                    if (hasKeyP2 >= 3){
-                        gp.obj[i] = null;
-                        hasKeyP2--;
-                    }
-                    System.out.println("key for P2:"+hasKeyP2);
-                    break;
-
-                case "market2":
-                    gp.obj[i] = null;
-                    System.out.println("empty");
-                    break;
-
-            }
         }
     }
     private void setDirectionAndTargetPositionP2() {

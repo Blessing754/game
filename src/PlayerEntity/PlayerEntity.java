@@ -1,7 +1,9 @@
 package PlayerEntity;
-
+import object.Weapon;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerEntity {
     // Attributes
@@ -20,86 +22,107 @@ public class PlayerEntity {
     public boolean movingTurn = false;
     public int spriteCounter = 0;
     public int spriteNum = 1;
-    public Rectangle solidArea;
+    public Rectangle solidArea = new Rectangle(); // Initialized to prevent null reference
     public int solidAreaDX, solidAreaDY;
     public boolean collisionOn = false;
-
+    public int stepsRemaining;
     private int health;
-    private int money;
-    private int power;
+    public int money;
+    public int power;
     public int startingX, startingY; // Starting position
     public String name;
+    private Weapon equippedWeapon;
+    private int baseStrength = 10;
+    private ArrayList<Weapon> inventory = new ArrayList<>();
 
-    // Constructor
-    public PlayerEntity(String name, int startingX, int startingY) {
+    // Constructor with parameters
+    public PlayerEntity(String name, int health, int money, int power) {
         this.name = name;
-        this.startingX = startingX;
-        this.startingY = startingY;
-        this.health = 100; // Default health value
-        this.money = 500; // Default money value
-        this.power = 10;  // Default power value
-        // Initialize other attributes as necessary
+        this.health =100;
+        this.money = 500;
+        this.power = 100;
+        this.inventory = new ArrayList<>();
     }
+
 
     public PlayerEntity(int startX, int startY, int startSpeed) {
         // Set starting positions and speed
-        worldX = startX;
-        worldY = startY;
-        speed = startSpeed;
-        // Initialize other fields as needed
+        this.worldX = startX;
+        this.worldY = startY;
+        this.speed = startSpeed;
     }
 
-    // No-argument constructor
     public PlayerEntity() {
-        // Call parameterized constructor with default values
-        this(0, 0, 0); // Default positions (0,0) and speed of 0
+        this( 0, 0, 0); // Default name, positions (0,0), and speed of 0
     }
+    public boolean purchaseWeapon(Weapon weapon) {
+        if (inventory.contains(weapon)) {
+            System.out.println("Already owns " + weapon.getName());
+            return false;
+        }
+        if (money >= weapon.getPrice()) {
+            money -= weapon.getPrice();
+            inventory.add(weapon);
+            equippedWeapon = weapon;  // Or handle equipping separately
+            System.out.println("Purchased " + weapon.getName());
+            return true;
+        }
+        System.out.println("Not enough money to purchase " + weapon.getName());
+        return false;
+    }
+    public int calculateTotalStrength() {
+        int totalStrength = this.power; // Start with base strength
+        if (equippedWeapon != null) {
+            totalStrength += equippedWeapon.getStrengthBonus(); // Add weapon strength bonus if weapon is equipped
+        }
+        return totalStrength;
+    }
+
+    public Weapon getEquippedWeapon() {
+        return equippedWeapon;
+    }
+
+    // Method to equip a weapon
+    public void equipWeapon(Weapon weapon) {
+        this.equippedWeapon = weapon;
+        System.out.println(this.name + " has equipped " + weapon.getName());
+    }
+
 
     // Getters and Setters
-    public int getHealth() {
-        return health;
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; } // Fixed setter
+    public int getHealth() { return health; }
+
+    public void setHealth(int health) { this.health = health; }
+    public void setMoney(int money) { this.money = money; }
+    public int getPower() { return power; }
+
+    public void setPower(int power) { this.power = power; }
+    public void addMoney(int amount) {
+        this.money += amount;
     }
 
-    public void setHealth(int health) {
-        this.health = health;
+    public int getMoney() { return this.money; }
+    public List<Weapon> getInventory() {
+        return inventory;
     }
 
-    public int getMoney() {
-        return money;
+    public int getStepsRemaining() {
+        return stepsRemaining;
     }
-
-    public void setMoney(int money) {
-        this.money = money;
+    public void setStepsRemaining(int stepsRemaining) {
+        this.stepsRemaining = stepsRemaining;
     }
-
-    public int getPower() {
-        return power;
-    }
-
-    public void setPower(int power) {
-        this.power = power;
-    }
-
     public void resetPosition() {
         this.worldX = startingX;
         this.worldY = startingY;
         // Reset other movement-related attributes as needed
     }
 
-    //public String getName() {return name;}
-
-    //public String setName(String name) {this.name = name;}
-
-    public int getWorldX() {
-        return worldX;
-    }
-
-    public int getWorldY() {
-        return worldY;
-    }
-
-    // You may also want to implement a method to update the player's sprite based on direction and movement
-
+    public int getWorldX() { return worldX; }
+    public int getWorldY() { return worldY; }
 
     // Implement methods to draw the player and handle other logic as needed.
 }

@@ -20,6 +20,7 @@ public class KeyHandler implements KeyListener {
 
     // Internal flags for Player 2 to prevent continuous movement when a key is held down
     private boolean canMoveW = true, canMoveS = true, canMoveA = true, canMoveD = true;
+    public boolean spacePressed;
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -45,6 +46,7 @@ public class KeyHandler implements KeyListener {
 
         // Check for other key actions (e.g., R key for reload or respawn)
         if (code == KeyEvent.VK_R) { rPressed = true; }
+
     }
 
     @Override
@@ -65,5 +67,6 @@ public class KeyHandler implements KeyListener {
 
         // Resets the R key flag
         if (code == KeyEvent.VK_R) { rPressed = false; }
+
     }
 }

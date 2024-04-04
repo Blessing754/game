@@ -25,6 +25,11 @@ public class TileManager {
         loadMap();
 
     }
+    public void changeTileToDirt(int worldX, int worldY) {
+        int col = worldX / gp.tileSize;
+        int row = worldY / gp.tileSize;
+        mapTileNum[col][row] = 0; // Assuming 13 is the ID for dirt tile
+    }
 
 
 public void getTileImage()  {
@@ -170,6 +175,14 @@ public void getTileImage()  {
         }
     }
 
+    }
+    public void setTileToGrass(int x, int y) {
+        mapTileNum[2][5] = 13;
+        mapTileNum[9][5] = 13;
+        mapTileNum[10][2] = 13;
+        mapTileNum[5][7] = 13;
+        mapTileNum[5][9] = 13;
+        mapTileNum[10][9] = 13;
     }
 
 }

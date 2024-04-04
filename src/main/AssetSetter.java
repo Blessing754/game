@@ -14,11 +14,11 @@ public class AssetSetter {
         gp.obj[0].worldX= 8 * gp.tileSize;
         gp.obj[0].worldY= 7 * gp.tileSize;
 
-        gp.obj[1] =new OBJ_hut();
+        gp.obj[1] =new OBJ_Hut();
         gp.obj[1].worldX= 1 * gp.tileSize;
         gp.obj[1].worldY= 6 * gp.tileSize;
 
-        gp.obj[2] =new OBJ_hut();
+        gp.obj[2] =new OBJ_Hut();
         gp.obj[2].worldX= 12 * gp.tileSize;
         gp.obj[2].worldY= 6 * gp.tileSize;
 
@@ -34,11 +34,11 @@ public class AssetSetter {
         gp.obj[5].worldX= 6 * gp.tileSize;
         gp.obj[5].worldY= 3 * gp.tileSize;
 
-        gp.obj[6] =new OBJ_m2();
+        gp.obj[6] =new OBJ_House();
         gp.obj[6].worldX= 9 * gp.tileSize;
         gp.obj[6].worldY= 8 * gp.tileSize;
 
-        gp.obj[7] =new OBJ_m2();
+        gp.obj[7] =new OBJ_House();
         gp.obj[7].worldX= 5 * gp.tileSize;
         gp.obj[7].worldY= 10 * gp.tileSize;
 
@@ -75,6 +75,61 @@ public class AssetSetter {
         gp.obj[15].worldY= 9 * gp.tileSize;
 
 
+        gp.obj[16] = new OBJ_JewelEncrustedSword();
+        gp.obj[16].worldX = 5 * gp.tileSize; // Replace N with the next index and X with the desired grid position
+        gp.obj[16].worldY = 9 * gp.tileSize; // Replace Y with the desired grid position
+
+        gp.obj[17] = new OBJ_JewelEncrustedSword();
+        gp.obj[17].worldX = 10 * gp.tileSize; // Replace N with the next index and X with the desired grid position
+        gp.obj[17].worldY = 9 * gp.tileSize; // Replace Y with the desired grid position
+
+        gp.obj[18] = new OBJ_Diamondring();
+        gp.obj[18].worldX = 10 * gp.tileSize; // Example coordinates
+        gp.obj[18].worldY = 5 * gp.tileSize;
+
+        gp.obj[19] = new OBJ_Diamondring();
+        gp.obj[19].worldX = 3 * gp.tileSize; // Example coordinates
+        gp.obj[19].worldY = 5 * gp.tileSize;
+
+        gp.obj[20] = new OBJ_woodenbow();
+        gp.obj[20].worldX = 10 * gp.tileSize; // Example coordinates
+        gp.obj[20].worldY = 2 * gp.tileSize;
+
+        gp.obj[21] = new OBJ_woodenbow();
+        gp.obj[21].worldX = 5 * gp.tileSize; // Example coordinates
+        gp.obj[21].worldY = 7* gp.tileSize;
+
+        gp.obj[22] = new OBJ_CrystalGoblet();
+        gp.obj[22].worldX = 3 * gp.tileSize; // Example coordinates
+        gp.obj[22].worldY = 9 * gp.tileSize;
+
+        gp.obj[23] = new OBJ_CrystalGoblet();
+        gp.obj[23].worldX = 6 * gp.tileSize; // Example coordinates
+        gp.obj[23].worldY = 9 * gp.tileSize;
+
+        gp.obj[24] = new OBJ_dragonscroll();
+        gp.obj[24].worldX = 10 * gp.tileSize; // Example coordinates
+        gp.obj[24].worldY = 6 * gp.tileSize;
+
+        gp.obj[25] = new OBJ_dragonscroll();
+        gp.obj[25].worldX = 8 * gp.tileSize; // Example coordinates
+        gp.obj[25].worldY = 6 * gp.tileSize;
+
+        gp.obj[26] = new OBJ_GoldenGoblet();
+        gp.obj[26].worldX = 7 * gp.tileSize; // Example coordinates
+        gp.obj[26].worldY = 7 * gp.tileSize;
+
+        gp.obj[27] = new OBJ_GoldenGoblet();
+        gp.obj[27].worldX = 8 * gp.tileSize; // Example coordinates
+        gp.obj[27].worldY = 8 * gp.tileSize;
+
+        gp.obj[28] = new OBJ_paladinShield();
+        gp.obj[28].worldX = 2 * gp.tileSize; // Example coordinates
+        gp.obj[28].worldY = 5 * gp.tileSize;
+
+        gp.obj[29] = new OBJ_paladinShield();
+        gp.obj[29].worldX = 9 * gp.tileSize; // Example coordinates
+        gp.obj[29].worldY = 5 * gp.tileSize;
 
 
 

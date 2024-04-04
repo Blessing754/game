@@ -1,18 +1,14 @@
 package main;
 
 import PlayerEntity.PlayerEntity;
-import object.OBJ_House;
-import object.SuperObject;
-import object.Weapon;
-import object.OBJ_JewelEncrustedSword;
-import object.OBJ_paladinShield;
-import object.OBJ_woodenbow;
+import object.*;
 
 public class CollisionChecker {
     GamePanel gp;
 
     public CollisionChecker(GamePanel gp) {
         this.gp = gp;
+
 
     }
 
@@ -76,6 +72,8 @@ public class CollisionChecker {
                             handleHouseCollision(entity, i);
                         } else if (gp.obj[i] instanceof OBJ_JewelEncrustedSword || gp.obj[i] instanceof OBJ_paladinShield || gp.obj[i] instanceof OBJ_woodenbow) {
                             handleWeaponCollision(entity, gp.obj[i], i);
+                        } else if (gp.obj[i] instanceof OBJ_Trap) {
+                            handleTrapCollision(entity, i);
                         }
                         index = i; // Mark index of the collided object
                     }
@@ -126,6 +124,22 @@ public class CollisionChecker {
                 gp.tileM.setTileToGrass(tileX, tileY);
             }
             gp.repaint(); // Refresh display to reflect any changes
+        }
+    }
+    private void handleTrapCollision(PlayerEntity player, int trapIndex) {
+        if (trapIndex < 0 || trapIndex >= gp.obj.length) {
+            return; // Ensure index is in bounds
+        }
+
+        SuperObject obj = gp.obj[trapIndex];
+        if (obj instanceof OBJ_Trap) {
+            OBJ_Trap trap = (OBJ_Trap) obj;
+            player.setMoney(player.getMoney() - trap.moneyPenalty); // Deduct money
+            player.setPower(player.getPower() - trap.powerPenalty); // Deduct power
+            System.out.println(player.getName() + " hit a trap! Money and power penalized.");
+
+            // Do not remove the trap object, allowing it to be triggered multiple times
+            // gp.obj[trapIndex] = null; // This line is removed
         }
     }
 }

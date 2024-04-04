@@ -35,9 +35,9 @@ public class Player2 extends PlayerEntity {
         getPlayerImageP2();
         getPlayerImageP2();
         this.name = "Player 2";
-        this.setMoney(600);
+        this.setMoney(500);
         this.setHealth(200);
-        this.setPower(200);
+        this.setPower(0);
     }
     public void setMoney(int money) {
         this.money = money;
@@ -238,6 +238,12 @@ public class Player2 extends PlayerEntity {
                     }
                     System.out.println("key for P2:"+hasKeyP2);
                     break;
+
+                case "market2":
+                    gp.obj[i] = null;
+                    System.out.println("empty");
+                    break;
+
             }
         }
     }

@@ -8,7 +8,7 @@ public class OBJ_JewelEncrustedSword extends Weapon {
     public OBJ_JewelEncrustedSword() {
         // Assuming the sword is interactable by default
         // If different, adjust the true value accordingly
-        super("Jewel-Encrusted Sword", 10, 100, true); // Include isInteractable in the constructor
+        super("Jewel-Encrusted Sword", 50, 300, true); // Include isInteractable in the constructor
 
         try {
             this.image = ImageIO.read(getClass().getResourceAsStream("/objects/sword_normal.png"));

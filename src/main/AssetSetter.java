@@ -34,6 +34,8 @@ public class AssetSetter {
         gp.obj[5].worldX= 6 * gp.tileSize;
         gp.obj[5].worldY= 3 * gp.tileSize;
 
+
+
         gp.obj[6] =new OBJ_House();
         gp.obj[6].worldX= 9 * gp.tileSize;
         gp.obj[6].worldY= 8 * gp.tileSize;
@@ -93,7 +95,7 @@ public class AssetSetter {
 
         gp.obj[20] = new OBJ_woodenbow();
         gp.obj[20].worldX = 10 * gp.tileSize; // Example coordinates
-        gp.obj[20].worldY = 2 * gp.tileSize;
+        gp.obj[20].worldY = 3* gp.tileSize;
 
         gp.obj[21] = new OBJ_woodenbow();
         gp.obj[21].worldX = 5 * gp.tileSize; // Example coordinates
@@ -131,8 +133,33 @@ public class AssetSetter {
         gp.obj[29].worldX = 9 * gp.tileSize; // Example coordinates
         gp.obj[29].worldY = 5 * gp.tileSize;
 
+        gp.obj[30] =new OBJ_market();
+        gp.obj[30].worldX= 4 * gp.tileSize;
+        gp.obj[30].worldY= 3 * gp.tileSize;
 
+        gp.obj[31] =new OBJ_market();
+        gp.obj[31].worldX= 8 * gp.tileSize;
+        gp.obj[31].worldY= 3 * gp.tileSize;
 
+        gp.obj[32] = new OBJ_paladinShield();
+        gp.obj[32].worldX = 8 * gp.tileSize; // Example coordinates
+        gp.obj[32].worldY = 3 * gp.tileSize;
+
+        gp.obj[33] = new OBJ_woodenbow();
+        gp.obj[33].worldX = 3 * gp.tileSize; // Example coordinates
+        gp.obj[33].worldY =3* gp.tileSize;
+
+        gp.obj[34] = new OBJ_JewelEncrustedSword();
+        gp.obj[34].worldX = 4 * gp.tileSize; // Replace N with the next index and X with the desired grid position
+        gp.obj[34].worldY = 3 * gp.tileSize; // Replace Y with the desired grid position
+
+        gp.obj[35] = new OBJ_JewelEncrustedSword();
+        gp.obj[35].worldX = 6 * gp.tileSize; // Replace N with the next index and X with the desired grid position
+        gp.obj[35].worldY = 3 * gp.tileSize; // Replace Y with the desired grid position
+
+        gp.obj[35] = new OBJ_House();
+        gp.obj[35].worldX = 5 * gp.tileSize; // Replace N with the next index and X with the desired grid position
+        gp.obj[35].worldY = 5 * gp.tileSize; // Replace Y with the desired grid position
 
 
 

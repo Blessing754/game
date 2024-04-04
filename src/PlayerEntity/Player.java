@@ -53,7 +53,7 @@ public class Player extends PlayerEntity {
         startingY = 384; // Your starting Y, assuming it's a constant
         this.setMoney(500);
         this.setHealth(200);
-        this.setPower(150); // Initialize with some strength
+        this.setPower(0); // Initialize with some strength
         this.inventory = new ArrayList<>();
 
     }
@@ -184,6 +184,11 @@ public class Player extends PlayerEntity {
                     }
                     System.out.println("key:" + hasKey);
 
+                    break;
+
+                case "market2":
+                    gp.obj[i] = null;
+                    System.out.println("empty");
                     break;
 
             }
